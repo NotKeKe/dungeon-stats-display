@@ -45,8 +45,8 @@
   ```
 
 ## How does this work?
-一開始我基於 minescript EventQueue，去 register_chat_listener，但可能是我本身有其他模組的問題，他抓不到我的聊天訊息，因為模組太多 我也不想一一嘗試。
-因此現在這個版本，是使用閱讀 `.minecraft/logs/latest.log` 的方式去偵測聊天訊息。
+一開始我基於 minescript EventQueue，去 register_chat_listener，但可能是我本身有其他模組的問題，他抓不到我的聊天訊息，因為模組太多 我也不想一一嘗試。  
+因此現在這個版本，是使用閱讀 `.minecraft/logs/latest.log` 的方式去偵測聊天訊息。  
 不過關於 `!dsd` 指令的部分，他還是一樣使用minescript的`OUTGOING_CHAT_INTERCEPT`。
 
 ## TODO

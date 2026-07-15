@@ -45,8 +45,8 @@ I formatted the output based on Odin's output format. — **shout-out to Odin!**
   ```
 
 ## How does this work?
-At first, I used the Minescript EventQueue to call `register_chat_listener`, but perhaps due to issues with my other mods, it couldn't capture my chat messages. Since I have so many mods, I didn't want to try all of them.
-So, in this version, chat messages are detected by reading `.minecraft/logs/latest.log`.
+At first, I used the Minescript EventQueue to call `register_chat_listener`, but perhaps due to issues with my other mods, it couldn't capture my chat messages. Since I have so many mods, I didn't want to try all of them.  
+So, in this version, chat messages are detected by reading `.minecraft/logs/latest.log`.  
 However, regarding the `!dsd` command, it still uses Minescript's `OUTGOING_CHAT_INTERCEPT`.
 
 ## TODO
