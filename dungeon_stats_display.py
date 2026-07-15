@@ -13,7 +13,6 @@ import logging
 from logging.handlers import RotatingFileHandler
 import threading
 
-API_KEY = "ca95fff0-23e6-4921-aa86-3cdfd4ee7198"
 BASE_URL = "https://api.hypixel.net/v2/skyblock"
 
 DATA_DIR = Path(__file__).parent / "dungeon-stats-display"
@@ -326,7 +325,7 @@ class Display:
             ],
             [
                 {"text": "Cata: ", "color": "gray"},
-                {"text": str(cata_level), "color": "red"},
+                {"text": str(cata_level), "color": "green" if cata_level < 25 else "yellow" if cata_level < 40 else "orange" if cata_level < 50 else "red"},
                 {"text": " | Secrets: ", "color": "gray"},
                 {"text": str(secrets), "color": "green"},
                 {"text": f" ({avg_secrets:.2f})", "color": "dark_green"},
@@ -406,7 +405,8 @@ def load_api_key() -> str:
                 value = line[4:]
                 if value:
                     return value
-    return API_KEY
+
+    return ""
 
 
 def save_api_key(key: str):
@@ -463,6 +463,11 @@ def get_profiles_data(uuid: str) -> dict | None:
     cached = cache.get(cache_key)
     if cached:
         return json.loads(cached)
+
+    api_key = get_api_key()
+    if not api_key:
+        minescript.echo("DSD: No API key set. Set it with `!dsd key <key>`.")
+        return
 
     resp = requests.get(
         f"{BASE_URL}/profiles",
