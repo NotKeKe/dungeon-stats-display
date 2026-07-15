@@ -31,6 +31,11 @@
 
 ## 如何使用？
 - 從 Modrinth [下載 Minescript](https://modrinth.com/mod/minescript)
+- 確保你的電腦裡面有 Python
+- 安裝依賴: 
+  ```bash
+  pip install requests nbt
+  ```
 - **下載** `dungeon_stats_display.py` 檔案。
 - 將 `dungeon_stats_display.py` 放入 minescript 資料夾。（通常位於 `.minecraft/minescript`，視你使用的啟動器而定）
 - **別忘了在 [Hypixel developer](https://developer.hypixel.net/dashboard) 產生你的 API Key**。

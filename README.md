@@ -30,7 +30,12 @@ I formatted the output based on Odin's output format. — **shout-out to Odin!**
 ![DEMO](docs/image.png)
 
 ## How to use?
-- [Download Minescript](https://modrinth.com/mod/minescript) from Modrinth
+- [Download Minescript](https://modrinth.com/mod/minescript) from Modrinth.
+- Make sure you have Python in you computer.
+- Install the dependencies: 
+  ```bash
+  pip install requests nbt
+  ```
 - **Download** the `dungeon_stats_display.py` file.
 - Put `dungeon_stats_display.py` file to the minscript foldor. (which might be in `.minecraft/minescript` depends on what client you are using)
 - **DON'T forget to generate your API key at [Hypixel developer](https://developer.hypixel.net/dashboard)**.
