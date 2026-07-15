@@ -26,7 +26,7 @@
 - Also, all data returned from Hypixel is processed locally; **your API key will not be uploaded anywhere other than Hypixel!**
 
 ## Demo
-I based this on Odin's output format — **shout-out to Odin!**
+I formatted the output based on Odin's output format. — **shout-out to Odin!**
 ![DEMO](docs/image.png)
 
 ## How to use?
@@ -38,6 +38,11 @@ I based this on Odin's output format — **shout-out to Odin!**
 - Type `!dsd key YOUR_API_KEY` (replace YOUR_API_KEY with your autual key)
   - You can also type `!dsd key` to see if your key is set correctly.
 - You can now join any party finder! You will see the stats of the player who join!
+
+- If you want the script to run automatically when the game starts, you need to add this line to `.minecraft/minescript/config.txt`:
+  ```text
+  autorun[*]=\dungeon_stats_display
+  ```
 
 ## How does this work?
 At first, I used the Minescript EventQueue to call `register_chat_listener`, but perhaps due to issues with my other mods, it couldn't capture my chat messages. Since I have so many mods, I didn't want to try all of them.

@@ -26,7 +26,7 @@
 - 此外，所有從 Hypixel 回傳的資料都在本機處理，**你的 API Key 絕不會被上傳到 Hypixel 以外的任何地方！**
 
 ## Demo
-輸出格式參考了 Odin 的設計——**向 Odin 致敬！**
+輸出格式使用了 Odin 的設計——**向 Odin 致敬！**
 ![DEMO](./image.png)
 
 ## 如何使用？
@@ -38,6 +38,11 @@
 - 輸入 `!dsd key YOUR_API_KEY`（將 YOUR_API_KEY 替換為你的實際 Key）
   - 你也可以輸入 `!dsd key` 來檢查 Key 是否設定正確。
 - 現在你可以加入任何 Party Finder！你將會看到加入的玩家數據！
+
+- 如果你希望腳本可以加入遊戲時自啟動，你需要在 `.minecraft/minescript/config.txt` 中加上這一行:
+  ```text
+  autorun[*]=\dungeon_stats_display
+  ```
 
 ## How does this work?
 一開始我基於 minescript EventQueue，去 register_chat_listener，但可能是我本身有其他模組的問題，他抓不到我的聊天訊息，因為模組太多 我也不想一一嘗試。
