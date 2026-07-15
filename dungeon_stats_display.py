@@ -11,6 +11,7 @@ import sqlite3
 from datetime import datetime
 import logging
 from logging.handlers import RotatingFileHandler
+import threading
 
 API_KEY = "ca95fff0-23e6-4921-aa86-3cdfd4ee7198"
 BASE_URL = "https://api.hypixel.net/v2/skyblock"
@@ -34,7 +35,7 @@ logger.addHandler(_log_handler)
 logger.propagate = False
 
 CHAT_PATTERN = re.compile(
-    r"Party Finder > (\w+) joined the dungeon group! \((\w+) Level (\d+)\)"
+    r"\[CHAT\].*?Party Finder > (\w+) joined the dungeon group! \((\w+) Level (\d+)\)"
 )
 
 MISSING_ITEMS_CHECK = {
@@ -444,7 +445,8 @@ def handle_dsd_command(message: str):
 
 
 def handle_chat_message(message: str):
-    match = CHAT_PATTERN.search(message)
+    clean = re.sub(r"\u00a7.", "", message)
+    match = CHAT_PATTERN.search(clean)
     if not match:
         return
 
@@ -616,51 +618,48 @@ def _process_and_display(username: str, user_class: str, user_level: str):
 
 def main():
     mc_log_path = Path(__file__).parent.parent / "logs" / "latest.log"
-    try:
+
+    def log_loop():
+        with open(mc_log_path, "r", encoding="utf-8", errors="ignore") as f:
+            f.seek(0, 2)
+            last_size = mc_log_path.stat().st_size
+
+            while True:
+                time.sleep(0.2)
+                try:
+                    current_size = mc_log_path.stat().st_size
+                except OSError:
+                    continue
+
+                if current_size < last_size:
+                    f.seek(0)
+                    last_size = current_size
+                    continue
+
+                if current_size > last_size:
+                    for line in f:
+                        line = line.rstrip("\n\r")
+                        if line:
+                            handle_chat_message(line)
+                    last_size = current_size
+
+    def event_loop():
         with minescript.EventQueue() as event_queue:
-            # event_queue.register_chat_listener()
             event_queue.register_outgoing_chat_interceptor(prefix="!dsd")
+            while True:
+                event = event_queue.get()
+                try:
+                    if event.type == minescript.EventType.OUTGOING_CHAT_INTERCEPT:
+                        handle_dsd_command(event.message)
+                except Exception as e:
+                    logger.exception("Event loop error")
+                    minescript.echo(f"DSD: Error: {e}")
 
-            with open(mc_log_path, "r", encoding="utf-8", errors="ignore") as f:
-                f.seek(0, 2)
-                last_size = mc_log_path.stat().st_size
+    log_thread = threading.Thread(target=log_loop, daemon=True)
+    log_thread.start()
 
-                while True:
-                    # 檢查事件
-                    event = event_queue.get()
-                    try:
-                        if event.type == minescript.EventType.OUTGOING_CHAT_INTERCEPT:
-                            handle_dsd_command(event.message)
-
-                        else:
-                            time.sleep(0.2)
-                            try:
-                                current_size = mc_log_path.stat().st_size
-                            except OSError:
-                                continue
-
-                            # 如果檔案被清空或輪替 (大小變小)，重新從頭讀取
-                            if current_size < last_size:
-                                f.seek(0)
-                                last_size = current_size
-                                continue
-
-                            # 讀取新增的行
-                            if current_size > last_size:
-                                line = f.readline()
-                                last_line = ""
-                                while line:
-                                    line = line.rstrip("\n\r")
-                                    if line and last_line not in line:
-                                        minescript.echo(f"Got line: {line}")
-                                    last_line = line
-                                    handle_chat_message(line)
-                                    line = f.readline()
-                                last_size = current_size
-
-                    except Exception as e:
-                        logger.exception("Event loop error")
-                        minescript.echo(f"DSD: Error: {e}")
+    try:
+        event_loop()
     except KeyboardInterrupt:
         pass
 
