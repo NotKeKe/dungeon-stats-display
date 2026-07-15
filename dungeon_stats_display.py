@@ -60,13 +60,15 @@ class Cache:
         con.commit()
         con.close()
 
+    CACHE_TTL = 180  # 3 minutes
+
     def get(self, key: str) -> str | None:
         con = sqlite3.connect(self._db_path)
         cur = con.cursor()
-        cur.execute("SELECT data FROM cache WHERE key = ?", (key,))
+        cur.execute("SELECT data, timestamp FROM cache WHERE key = ?", (key,))
         row = cur.fetchone()
         con.close()
-        if row:
+        if row and time.time() - row[1] < self.CACHE_TTL:
             return row[0]
         return None
 
