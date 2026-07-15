@@ -2,6 +2,7 @@ config.py
 __pycache__/
 test*
 *.json
+*.db
 
 # minescript 引用的
 system/
