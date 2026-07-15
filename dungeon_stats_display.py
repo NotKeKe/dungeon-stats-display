@@ -444,7 +444,6 @@ def handle_dsd_command(message: str):
 
 
 def handle_chat_message(message: str):
-    logger.info(message)
     match = CHAT_PATTERN.search(message)
     if not match:
         return
@@ -616,21 +615,52 @@ def _process_and_display(username: str, user_class: str, user_level: str):
 
 
 def main():
+    mc_log_path = Path(__file__).parent.parent / "logs" / "latest.log"
     try:
         with minescript.EventQueue() as event_queue:
-            event_queue.register_chat_listener()
+            # event_queue.register_chat_listener()
             event_queue.register_outgoing_chat_interceptor(prefix="!dsd")
-            while True:
-                event = event_queue.get()
-                try:
-                    if event.type == minescript.EventType.CHAT:
-                        # minescript.echo(f"Received: {event.message}")
-                        handle_chat_message(event.message)
-                    elif event.type == minescript.EventType.OUTGOING_CHAT_INTERCEPT:
-                        handle_dsd_command(event.message)
-                except Exception as e:
-                    logger.exception("Event loop error")
-                    minescript.echo(f"DSD: Error: {e}")
+
+            with open(mc_log_path, "r", encoding="utf-8", errors="ignore") as f:
+                f.seek(0, 2)
+                last_size = mc_log_path.stat().st_size
+
+                while True:
+                    # 檢查事件
+                    event = event_queue.get()
+                    try:
+                        if event.type == minescript.EventType.OUTGOING_CHAT_INTERCEPT:
+                            handle_dsd_command(event.message)
+
+                        else:
+                            time.sleep(0.2)
+                            try:
+                                current_size = mc_log_path.stat().st_size
+                            except OSError:
+                                continue
+
+                            # 如果檔案被清空或輪替 (大小變小)，重新從頭讀取
+                            if current_size < last_size:
+                                f.seek(0)
+                                last_size = current_size
+                                continue
+
+                            # 讀取新增的行
+                            if current_size > last_size:
+                                line = f.readline()
+                                last_line = ""
+                                while line:
+                                    line = line.rstrip("\n\r")
+                                    if line and last_line not in line:
+                                        minescript.echo(f"Got line: {line}")
+                                    last_line = line
+                                    handle_chat_message(line)
+                                    line = f.readline()
+                                last_size = current_size
+
+                    except Exception as e:
+                        logger.exception("Event loop error")
+                        minescript.echo(f"DSD: Error: {e}")
     except KeyboardInterrupt:
         pass
 
