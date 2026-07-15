@@ -10,12 +10,12 @@
 - 有關網路請求，一律使用 requests
 
 ## 檔案說明
-我們的最終目標，是將所有東西集合成一個檔案內，最終只有 `dungeon-stats-display.py` 會被用到，其他檔案不會進到正式環境。
+我們的最終目標，是將所有東西集合成一個檔案內，最終只有 `dungeon_stats_display.py` 會被用到，其他檔案不會進到正式環境。
 
 ## dungeon stats display 流程
 注意以下除非特別提及，否則 **輸出** ，一律指透過 minescript 進行輸出 (如 echo)
 
-1. 抓取聊天室留言，格式如下:
+1. **持續** 抓取聊天室留言，格式如下:
     - Party Finder > {USER_NAME} joined the dungeon group! ({CLASS} Level {LEVEL})
     - 範例: Party Finder > keke joined the dungeon group! (Healer Level 30)
 
@@ -49,18 +49,20 @@
         1. 範例:
             normal:
             ```text
-            F1: 1m34s
-            F2: 10m1s
+            Floor | S | S+
+            F1: 1m34s | 1m35s
+            F2: 10m1s | 2m355
             ...(省略)
-            F7: 5m6s
+            F7: 5m6s | 4m59s
             ```
             master:
             ```text
-            M1: 2m1s
-            M2: 4m45s
-            M3: 1m00s
+            Floor | S | S+
+            M1: 2m1s | 2m1s
+            M2: 4m45s | 4m45s
+            M3: 1m00s | 1m01s
             ...
-            M7: 10m5s
+            M7: 10m5s | 9m5s
             ```
         - 範例:
         ```text
