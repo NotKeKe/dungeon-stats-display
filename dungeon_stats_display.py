@@ -271,25 +271,34 @@ class Display:
         return pieces
 
     @staticmethod
-    def _make_missing_text(inventory_list: list[str], pets: list[dict]) -> str:
+    def _make_missing_pieces(inventory_list: list[str], pets: list[dict]) -> list[dict]:
         missing_status = Utils.check_missing_items(inventory_list)
 
-        parts: list[str] = []
+        names: list[str] = []
         for item_id, display_name in MISSING_ITEMS_CHECK.items():
             if not missing_status[item_id]:
-                parts.append(f"\u2716 {display_name}")
+                names.append(display_name)
 
         has_spirit = any(p.get("type", "").lower() == "spirit" for p in pets)
         has_edrag = any(p.get("type", "").lower() == "ender_dragon" for p in pets)
         has_gdrag = any(p.get("type", "").lower() == "golden_dragon" for p in pets)
         if not has_spirit:
-            parts.append("\u2716 Spirit")
+            names.append("Spirit")
         if not has_edrag:
-            parts.append("\u2716 EDrag")
+            names.append("EDrag")
         if not has_gdrag:
-            parts.append("\u2716 GDrag")
+            names.append("GDrag")
 
-        return " | ".join(parts) if parts else "None"
+        if not names:
+            return [{"text": "None", "color": "dark_gray"}]
+
+        pieces: list[dict] = []
+        for i, name in enumerate(names):
+            if i > 0:
+                pieces.append({"text": " | ", "color": "dark_gray"})
+            pieces.append({"text": "\u2716", "color": "red"})
+            pieces.append({"text": " " + name, "color": "dark_gray"})
+        return pieces
 
     @staticmethod
     def _make_floor_hover(pb_times: dict[str, dict[str, str]], floor_names: list[str]) -> str:
@@ -319,7 +328,7 @@ class Display:
     ):
         normal_hover = cls._make_floor_hover(normal_pb, Utils.FLOOR_NAMES)
         master_hover = cls._make_floor_hover(master_pb, Utils.MASTER_FLOOR_NAMES)
-        missing_text = cls._make_missing_text(inventory_list, pets)
+        missing_pieces = cls._make_missing_pieces(inventory_list, pets)
         armor_json = cls._make_armor_json(armor_names)
 
         lines: list[list[dict]] = [
@@ -353,10 +362,7 @@ class Display:
                 {"text": f" MP: {magical_power}", "color": "pink"},
             ],
             [{"text": "Armor: ", "color": "gray"}, *armor_json],
-            [
-                {"text": "Missing: ", "color": "gray"},
-                {"text": missing_text, "color": "dark_gray"},
-            ],
+            [{"text": "Missing: ", "color": "gray"}, *missing_pieces],
             [
                 {"text": "--------------------", "color": "gray"},
             ],
