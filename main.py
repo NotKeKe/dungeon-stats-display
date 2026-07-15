@@ -105,6 +105,11 @@ def get_run_stats_info(dungeon_data: dict) -> tuple[dict, str]:
     format_string = f"total runs: {total_runs}\nsecret/run: {secrets_per_run:.2f}"
     return stats, format_string
 
+def get_magical_power() -> tuple[int, str]: 
+    power = user_profile['accessory_bag_storage']['highest_magical_power']
+    format_string = f"magical power: {power}"
+    return power, format_string
+
 
 def get_catacombs_level_info(dungeon_data: dict) -> tuple[tuple, str]:
     xp_data = class_xp_to_level(dungeon_data['dungeon_types']['catacombs']['experience'])
@@ -173,6 +178,11 @@ print()
 # run stats
 run_stats, stats_str = get_run_stats_info(dungeon_data)
 print(stats_str)
+print()
+
+# magical power
+magical_power, power_str = get_magical_power()
+print(power_str)
 print()
 
 # catacombs level
