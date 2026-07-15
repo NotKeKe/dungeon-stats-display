@@ -9,6 +9,8 @@ import io
 from nbt import nbt
 import sqlite3
 from datetime import datetime
+import logging
+from logging.handlers import RotatingFileHandler
 
 API_KEY = "ca95fff0-23e6-4921-aa86-3cdfd4ee7198"
 BASE_URL = "https://api.hypixel.net/v2/skyblock"
@@ -17,6 +19,19 @@ DATA_DIR = Path(__file__).parent / "dungeon-stats-display"
 DATA_DIR.mkdir(exist_ok=True)
 DB_PATH = DATA_DIR / "dungeons.db"
 ENV_PATH = DATA_DIR / ".env"
+LOG_PATH = DATA_DIR / "dsd.log"
+
+_log_handler = RotatingFileHandler(
+    LOG_PATH, maxBytes=100000, backupCount=0, encoding="utf-8"
+)
+_log_handler.setFormatter(logging.Formatter(
+    "%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+))
+logger = logging.getLogger("dsd")
+logger.setLevel(logging.INFO)
+logger.addHandler(_log_handler)
+logger.propagate = False
 
 CHAT_PATTERN = re.compile(
     r"Party Finder > (\w+) joined the dungeon group! \((\w+) Level (\d+)\)"
@@ -210,6 +225,7 @@ class Utils:
             try:
                 data = Utils.decode_nbt_base64(nbt_str)
             except Exception:
+                logger.exception("NBT decode error")
                 continue
 
             for item in data:
@@ -428,6 +444,7 @@ def handle_dsd_command(message: str):
 
 
 def handle_chat_message(message: str):
+    logger.info(message)
     match = CHAT_PATTERN.search(message)
     if not match:
         return
@@ -436,25 +453,9 @@ def handle_chat_message(message: str):
     user_class = match.group(2)
     user_level = match.group(3)
 
+    logger.info(f"Processing {username}-{user_class}-{user_level} with message `{message}`")
+
     process_and_display(username, user_class, user_level)
-    cache_key = f"uuid:{username}"
-    cached = cache.get(cache_key)
-    if cached:
-        return cached
-
-    resp = requests.get(
-        f"https://api.mojang.com/users/profiles/minecraft/{username}"
-    )
-    if resp.status_code != 200:
-        minescript.echo(f"DSD: Cannot find user {username}")
-        return None
-
-    data = resp.json()
-    uuid = data.get("id")
-    if uuid:
-        cache.set(cache_key, uuid)
-    return uuid
-
 
 def get_profiles_data(uuid: str) -> dict | None:
     cache_key = f"profiles:{uuid}"
@@ -473,7 +474,7 @@ def get_profiles_data(uuid: str) -> dict | None:
             error_data = resp.json()
             cause = error_data.get("cause", "")
         except Exception:
-            pass
+            logger.exception("Hypixel API error response parse failed")
         msg = f"DSD: Hypixel API error: {resp.status_code}"
         if cause:
             msg += f" ({cause})"
@@ -504,6 +505,14 @@ def get_selected_profile(profiles_data: dict, uuid: str) -> dict | None:
 
 
 def process_and_display(username: str, user_class: str, user_level: str):
+    try:
+        _process_and_display(username, user_class, user_level)
+    except Exception as e:
+        logger.exception("Error processing %s: %s", username, e)
+        minescript.echo(f"DSD: Error processing {username}: {e}")
+
+
+def _process_and_display(username: str, user_class: str, user_level: str):
     uuid = get_uuid(username)
     if uuid is None:
         return
@@ -580,6 +589,7 @@ def process_and_display(username: str, user_class: str, user_level: str):
         try:
             armor_names = Utils.get_armor_names(inv_armor["data"])
         except Exception:
+            logger.exception("Armor NBT decode error for %s", username)
             armor_names = ["?", "?", "?", "?"]
     else:
         armor_names = ["None", "None", "None", "None"]
@@ -612,10 +622,15 @@ def main():
             event_queue.register_outgoing_chat_interceptor(prefix="!dsd")
             while True:
                 event = event_queue.get()
-                if event.type == minescript.EventType.CHAT:
-                    handle_chat_message(event.message)
-                elif event.type == minescript.EventType.OUTGOING_CHAT_INTERCEPT:
-                    handle_dsd_command(event.message)
+                try:
+                    if event.type == minescript.EventType.CHAT:
+                        # minescript.echo(f"Received: {event.message}")
+                        handle_chat_message(event.message)
+                    elif event.type == minescript.EventType.OUTGOING_CHAT_INTERCEPT:
+                        handle_dsd_command(event.message)
+                except Exception as e:
+                    logger.exception("Event loop error")
+                    minescript.echo(f"DSD: Error: {e}")
     except KeyboardInterrupt:
         pass
 
