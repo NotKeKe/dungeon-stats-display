@@ -22,7 +22,7 @@
 
 ## Why this?
 - Recently, the Odin mod has occasionally been displaying error codes related to 429 or 500, which often prevents us from quickly determining whether a user’s gear, secrets, and other items meet our requirements.
-- So, I created this script—which is **less than a thousand** lines long—to allow users to **send requests by applying for your own API keys**.
+- So, I created this script—which is **about 600~700** lines to allow users to **send requests by applying for your own API keys**.
 - Also, all data returned from Hypixel is processed locally; **your API key will not be uploaded anywhere other than Hypixel!**
 
 ## Demo
