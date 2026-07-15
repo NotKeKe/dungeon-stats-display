@@ -295,9 +295,9 @@ class Display:
         pieces: list[dict] = []
         for i, name in enumerate(names):
             if i > 0:
-                pieces.append({"text": " | ", "color": "dark_gray"})
+                pieces.append({"text": " | ", "color": "gray"})
             pieces.append({"text": "\u2716", "color": "red"})
-            pieces.append({"text": " " + name, "color": "dark_gray"})
+            pieces.append({"text": " " + name, "color": "white"})
         return pieces
 
     @staticmethod
@@ -349,17 +349,18 @@ class Display:
                 {"text": "Floors: ", "color": "gray"},
                 {
                     "text": "Normal",
-                    "color": "gray",
+                    "color": "white",
                     "hoverEvent": {"action": "show_text", "value": normal_hover},
                 },
                 {"text": " | ", "color": "dark_gray"},
                 {
                     "text": "Master",
-                    "color": "black",
+                    "color": "dark_gray",
                     "hoverEvent": {"action": "show_text", "value": master_hover},
                 },
                 {"text": " | ", "color": "dark_gray"},
-                {"text": f" MP: {magical_power}", "color": "pink"},
+                {"text": "MP: ", "color": "gray"},
+                {"text": str(magical_power), "color": "light_purple"},
             ],
             [{"text": "Armor: ", "color": "gray"}, *armor_json],
             [{"text": "Missing: ", "color": "gray"}, *missing_pieces],
