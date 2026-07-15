@@ -12,6 +12,8 @@
 
  ![Stars](https://img.shields.io/github/stars/NotKeKe/dungeon-stats-display?style=social)
 
+ [![Docs](https://img.shields.io/badge/Docs-English-blue.svg)](README.md)
+ [![Docs](https://img.shields.io/badge/Docs-繁體中文-blue.svg)](docs/readme-tw.md) <br>
  [![License](https://img.shields.io/badge/license-Apache%20License%202.0-yellow)](LICENSE) <br>
 
 </div>
