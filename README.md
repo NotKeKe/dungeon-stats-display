@@ -1,11 +1,13 @@
 <h1 align="center">Dungeon Stats Display (Minescript)</h1>
 
 <p align="center">
+  <strong>
   A Minecraft Hypixel Skyblock Dungeon script.
   <br>
   You can use your own API key to see user stats.
   <br>
   Base on Minescript
+  </strong>
 </p>
 
 <div align="center">
@@ -36,6 +38,11 @@ I based this on Odin's output format — **shout-out to Odin!**
 - Type `!dsd key YOUR_API_KEY` (replace YOUR_API_KEY with your autual key)
   - You can also type `!dsd key` to see if your key is set correctly.
 - You can now join any party finder! You will see the stats of the player who join!
+
+## How does this work?
+At first, I used the Minescript EventQueue to call `register_chat_listener`, but perhaps due to issues with my other mods, it couldn't capture my chat messages. Since I have so many mods, I didn't want to try all of them.
+So, in this version, chat messages are detected by reading `.minecraft/logs/latest.log`.
+However, regarding the `!dsd` command, it still uses Minescript's `OUTGOING_CHAT_INTERCEPT`.
 
 ## TODO
 - The hover function is not working right now, so you can not autually see what armor are user wearing.

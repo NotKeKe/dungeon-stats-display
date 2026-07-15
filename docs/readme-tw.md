@@ -1,11 +1,13 @@
 <h1 align="center">Dungeon Stats Display (Minescript)</h1>
 
 <p align="center">
+  <strong>
   一個 Minecraft Hypixel Skyblock Dungeon 腳本。
   <br>
   你可以使用自己的 API Key 來查看玩家數據!
   <br>
   基於 Minescript
+  </strong>
 </p>
 
 <div align="center">
@@ -36,6 +38,11 @@
 - 輸入 `!dsd key YOUR_API_KEY`（將 YOUR_API_KEY 替換為你的實際 Key）
   - 你也可以輸入 `!dsd key` 來檢查 Key 是否設定正確。
 - 現在你可以加入任何 Party Finder！你將會看到加入的玩家數據！
+
+## How does this work?
+一開始我基於 minescript EventQueue，去 register_chat_listener，但可能是我本身有其他模組的問題，他抓不到我的聊天訊息，因為模組太多 我也不想一一嘗試。
+因此現在這個版本，是使用閱讀 `.minecraft/logs/latest.log` 的方式去偵測聊天訊息。
+不過關於 `!dsd` 指令的部分，他還是一樣使用minescript的`OUTGOING_CHAT_INTERCEPT`。
 
 ## TODO
 - 懸停顯示功能目前還無法使用，所以暫時無法看到玩家實際穿戴的裝備。
