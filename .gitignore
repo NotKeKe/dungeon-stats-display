@@ -3,6 +3,7 @@ __pycache__/
 test*
 *.json
 *.db
+*.log
 
 # minescript 引用的
 system/

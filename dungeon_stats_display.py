@@ -271,14 +271,19 @@ class Display:
         return pieces
 
     @staticmethod
-    def _make_missing_text(missing_status: dict[str, bool], pets: list[dict]) -> str:
+    def _make_missing_text(inventory_list: list[str], pets: list[dict]) -> str:
+        missing_status = Utils.check_missing_items(inventory_list)
+
         parts: list[str] = []
         for item_id, display_name in MISSING_ITEMS_CHECK.items():
             if not missing_status[item_id]:
                 parts.append(f"\u2716 {display_name}")
 
+        has_spirit = any(p.get("type", "").lower() == "spirit" for p in pets)
         has_edrag = any(p.get("type", "").lower() == "ender_dragon" for p in pets)
         has_gdrag = any(p.get("type", "").lower() == "golden_dragon" for p in pets)
+        if not has_spirit:
+            parts.append("\u2716 Spirit")
         if not has_edrag:
             parts.append("\u2716 EDrag")
         if not has_gdrag:
@@ -309,12 +314,12 @@ class Display:
         master_pb: dict[str, dict[str, str]],
         magical_power: int,
         armor_names: list[str],
-        missing_status: dict[str, bool],
+        inventory_list: list[str],
         pets: list[dict],
     ):
         normal_hover = cls._make_floor_hover(normal_pb, Utils.FLOOR_NAMES)
         master_hover = cls._make_floor_hover(master_pb, Utils.MASTER_FLOOR_NAMES)
-        missing_text = cls._make_missing_text(missing_status, pets)
+        missing_text = cls._make_missing_text(inventory_list, pets)
         armor_json = cls._make_armor_json(armor_names)
 
         lines: list[list[dict]] = [
@@ -602,7 +607,6 @@ def _process_and_display(username: str, user_class: str, user_level: str):
         armor_names = ["None", "None", "None", "None"]
 
     all_inv = Utils.get_all_inventory_data(inventory)
-    missing_status = Utils.check_missing_items(all_inv)
 
     Display.echo_stats(
         username=username,
@@ -615,7 +619,7 @@ def _process_and_display(username: str, user_class: str, user_level: str):
         master_pb=master_pb,
         magical_power=magical_power,
         armor_names=armor_names,
-        missing_status=missing_status,
+        inventory_list=all_inv,
         pets=pets,
     )
 
