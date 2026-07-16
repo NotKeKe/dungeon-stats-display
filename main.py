@@ -1,15 +1,12 @@
-import sys
 import threading
 import time
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent / "src"))
-
 import minescript
 
-from dungeon_stats_display.app import setup
-from dungeon_stats_display.handler import handle_chat_message, handle_dsd_command
-from dungeon_stats_display.constants import logger
+from src.dungeon_stats_display.app import setup
+from src.dungeon_stats_display.handler import handle_chat_message, handle_dsd_command
+from src.dungeon_stats_display.constants import logger
 
 BASE_DIR = Path(__file__).parent
 MC_LOG_PATH = BASE_DIR.parent / "logs" / "latest.log"
