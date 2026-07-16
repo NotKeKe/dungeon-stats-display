@@ -51,7 +51,9 @@ def main():
                     if event.type == minescript.EventType.OUTGOING_CHAT_INTERCEPT:
                         handle_dsd_command(event.message)
                 except Exception as e:
-                    logger.exception("Event loop error")
+                    _log = logger
+                    assert _log is not None
+                    _log.exception("Event loop error")
                     minescript.echo(f"DSD: Error: {e}")
 
     log_thread = threading.Thread(target=log_loop, daemon=True)

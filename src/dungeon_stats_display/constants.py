@@ -1,14 +1,19 @@
 import re
-from typing import Any
+import logging
+from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .cache import Cache
 
 BASE_URL = "https://api.hypixel.net/v2/skyblock"
 
-DATA_DIR: Any = None
-DB_PATH: Any = None
-ENV_PATH: Any = None
-LOG_PATH: Any = None
-logger: Any = None
-cache: Any = None
+DATA_DIR: Path | None = None
+DB_PATH: Path | None = None
+ENV_PATH: Path | None = None
+LOG_PATH: Path | None = None
+logger: logging.Logger | None = None
+cache: "Cache | None" = None
 
 CHAT_PATTERN = re.compile(
     r"\[CHAT\].*?Party Finder > (\w+) joined the dungeon group! \((\w+) Level (\d+)\)"

@@ -7,8 +7,10 @@ from . import constants
 
 
 def get_api_key() -> str:
-    if constants.ENV_PATH.exists():
-        for line in constants.ENV_PATH.read_text(encoding="utf-8").splitlines():
+    env = constants.ENV_PATH
+    assert env is not None
+    if env.exists():
+        for line in env.read_text(encoding="utf-8").splitlines():
             line = line.strip()
             if line.startswith("KEY="):
                 value = line[4:]
@@ -18,12 +20,17 @@ def get_api_key() -> str:
 
 
 def save_api_key(key: str):
-    constants.ENV_PATH.write_text(f"KEY={key}", encoding="utf-8")
+    env = constants.ENV_PATH
+    assert env is not None
+    env.write_text(f"KEY={key}", encoding="utf-8")
 
 
 def get_uuid(username: str) -> str | None:
+    cache = constants.cache
+    assert cache is not None
+
     cache_key = f"uuid:{username}"
-    cached = constants.cache.get(cache_key)
+    cached = cache.get(cache_key)
     if cached:
         return cached
 
@@ -37,13 +44,16 @@ def get_uuid(username: str) -> str | None:
     data = resp.json()
     uuid = data.get("id")
     if uuid:
-        constants.cache.set(cache_key, uuid)
+        cache.set(cache_key, uuid)
     return uuid
 
 
 def get_profiles_data(uuid: str) -> dict | None:
+    cache = constants.cache
+    assert cache is not None
+
     cache_key = f"profiles:{uuid}"
-    cached = constants.cache.get(cache_key)
+    cached = cache.get(cache_key)
     if cached:
         return json.loads(cached)
 
@@ -63,7 +73,9 @@ def get_profiles_data(uuid: str) -> dict | None:
             error_data = resp.json()
             cause = error_data.get("cause", "")
         except Exception:
-            constants.logger.exception("Hypixel API error response parse failed")
+            log = constants.logger
+            assert log is not None
+            log.exception("Hypixel API error response parse failed")
         msg = f"DSD: Hypixel API error: {resp.status_code}"
         if cause:
             msg += f" ({cause})"
@@ -71,7 +83,7 @@ def get_profiles_data(uuid: str) -> dict | None:
         return None
 
     data = resp.json()
-    constants.cache.set(cache_key, json.dumps(data, ensure_ascii=False))
+    cache.set(cache_key, json.dumps(data, ensure_ascii=False))
     return data
 
 

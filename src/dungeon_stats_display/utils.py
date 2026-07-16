@@ -131,7 +131,9 @@ class Utils:
             try:
                 data = Utils.decode_nbt_base64(nbt_str)
             except Exception:
-                constants.logger.exception("NBT decode error")
+                log = constants.logger
+                assert log is not None
+                log.exception("NBT decode error")
                 continue
 
             for item in data:

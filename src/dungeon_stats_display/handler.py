@@ -9,6 +9,12 @@ from .display import Display
 from .utils import Utils
 
 
+def _log():
+    logger = constants.logger
+    assert logger is not None
+    return logger
+
+
 def handle_dsd_command(message: str):
     parts = message.split(maxsplit=2)
     if len(parts) < 2 or parts[1] != "key":
@@ -19,9 +25,11 @@ def handle_dsd_command(message: str):
         minescript.echo("DSD: API key saved.")
         return
 
-    if constants.ENV_PATH.exists():
-        raw = constants.ENV_PATH.read_text(encoding="utf-8").strip()
-        ts = datetime.fromtimestamp(constants.ENV_PATH.stat().st_mtime).strftime("%Y-%m-%d %H:%M:%S")
+    env = constants.ENV_PATH
+    assert env is not None
+    if env.exists():
+        raw = env.read_text(encoding="utf-8").strip()
+        ts = datetime.fromtimestamp(env.stat().st_mtime).strftime("%Y-%m-%d %H:%M:%S")
         key = ""
         for line in raw.splitlines():
             if line.strip().startswith("KEY="):
@@ -46,7 +54,7 @@ def handle_chat_message(message: str):
     user_class = match.group(2)
     user_level = match.group(3)
 
-    constants.logger.info(f"Processing {username}-{user_class}-{user_level} with message `{message}`")
+    _log().info(f"Processing {username}-{user_class}-{user_level} with message `{message}`")
 
     process_and_display(username, user_class, user_level)
 
@@ -55,7 +63,7 @@ def process_and_display(username: str, user_class: str, user_level: str):
     try:
         _process_and_display(username, user_class, user_level)
     except Exception as e:
-        constants.logger.exception("Error processing %s: %s", username, e)
+        _log().exception("Error processing %s: %s", username, e)
         minescript.echo(f"DSD: Error processing {username}: {e}")
 
 
@@ -136,7 +144,7 @@ def _process_and_display(username: str, user_class: str, user_level: str):
         try:
             armor_names = Utils.get_armor_names(inv_armor["data"])
         except Exception:
-            constants.logger.exception("Armor NBT decode error for %s", username)
+            _log().exception("Armor NBT decode error for %s", username)
             armor_names = ["?", "?", "?", "?"]
     else:
         armor_names = ["None", "None", "None", "None"]
