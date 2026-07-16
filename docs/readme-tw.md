@@ -37,6 +37,7 @@
   pip install requests nbt
   ```
 - **下載** `dungeon_stats_display.py` 檔案。
+  - [點擊前往 GitHub 下載頁面](https://github.com/NotKeKe/dungeon-stats-display/releases/latest)
 - 將 `dungeon_stats_display.py` 放入 minescript 資料夾。（通常位於 `.minecraft/minescript`，視你使用的啟動器而定）
 - **別忘了在 [Hypixel developer](https://developer.hypixel.net/dashboard) 產生你的 API Key**。
 - 進入 Minecraft 後，在聊天室輸入 `\dungeon_stats_display`。（啟動腳本）

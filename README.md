@@ -37,6 +37,7 @@ I formatted the output based on Odin's output format. — **shout-out to Odin!**
   pip install requests nbt
   ```
 - **Download** the `dungeon_stats_display.py` file.
+  - [Click to download the latest version from GitHub](https://github.com/NotKeKe/dungeon-stats-display/releases/latest)
 - Put `dungeon_stats_display.py` file to the minscript foldor. (which might be in `.minecraft/minescript` depends on what client you are using)
 - **DON'T forget to generate your API key at [Hypixel developer](https://developer.hypixel.net/dashboard)**.
 - After enter your Minecraft, type `\dungeon_stats_display` in chat. (which start this script)
