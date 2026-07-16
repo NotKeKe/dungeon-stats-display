@@ -1,6 +1,5 @@
 import base64
 import io
-import re
 from nbt import nbt
 
 from . import constants

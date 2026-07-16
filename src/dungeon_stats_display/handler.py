@@ -4,7 +4,7 @@ from datetime import datetime
 import minescript
 
 from . import constants
-from .api import get_api_key, get_uuid, get_profiles_data, get_selected_profile, save_api_key
+from .api import get_uuid, get_profiles_data, get_selected_profile, save_api_key
 from .display import Display
 from .utils import Utils
 

@@ -1,7 +1,7 @@
-from . import constants
-from . import cache
-from . import utils
-from . import display
-from . import api
-from . import handler
-from . import app
+from . import constants as constants
+from . import cache as cache
+from . import utils as utils
+from . import display as display
+from . import api as api
+from . import handler as handler
+from . import app as app
