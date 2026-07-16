@@ -7,3 +7,6 @@ test*
 
 # minescript 引用的
 system/
+
+# Build output
+dungeon_stats_display.py

@@ -9,8 +9,12 @@
 - 有關檔案路徑，一律使用 pathlib，而不是 sys
 - 有關網路請求，一律使用 requests
 
-## 檔案說明
-我們的最終目標，是將所有東西集合成一個檔案內，最終只有 `dungeon_stats_display.py` 會被用到，其他檔案不會進到正式環境。
+## 專案結構
+開發時，程式碼位於 `src/dungeon_stats_display/` 中，使用正常的 Python package 結構。
+`main.py` 是進入點。
+
+部署前，執行 `python scripts/bundle.py` 來使用 stickytape 將所有程式碼打包成單一檔案 `dungeon_stats_display.py`。
+最終只有 `dungeon_stats_display.py` 會被進到正式環境。
 
 ## dungeon stats display 流程
 注意以下除非特別提及，否則 **輸出** ，一律指透過 minescript 進行輸出 (如 echo)
@@ -29,7 +33,7 @@
         - 試試能不能 parse 成 json，可以的話就 .get('cause')
         - 輸出 `DSD: Hypixel API error: `{status_code}` `，如果有取得 cause，就在輸出後面加上 cause
     - 是 200
-        - 調用一系列 `main.py` 裡面的東西 (注意如果有緩存，要先用緩存)
+        - 調用一系列 package 裡面的東西 (注意如果有緩存，要先用緩存)
         - 輸出格式如下:
         ```text
         ---------- {USER_NAME} ----------
