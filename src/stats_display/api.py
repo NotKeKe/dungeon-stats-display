@@ -37,7 +37,9 @@ def get_profiles_data(uuid: str) -> dict | None:
 
     api_key = get_api_key()
     if not api_key:
-        minescript.echo("DSD: No API key set. Set it with `!dsd key <key>`.")
+        minescript.echo_json(constants.dsd_prefix() + [
+            {"text": "No API key set. Set it with `!dsd key <key>`.", "color": "white"}
+        ])
         return None
 
     resp = requests.get(
@@ -54,10 +56,12 @@ def get_profiles_data(uuid: str) -> dict | None:
             log = constants.logger
             assert log is not None
             log.exception("Hypixel API error response parse failed")
-        msg = f"DSD: Hypixel API error: {resp.status_code}"
+        msg = f"Hypixel API error: {resp.status_code}"
         if cause:
             msg += f" ({cause})"
-        minescript.echo(msg)
+        minescript.echo_json(constants.dsd_prefix() + [
+            {"text": msg, "color": "white"}
+        ])
         return None
 
     data = resp.json()

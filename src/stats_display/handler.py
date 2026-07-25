@@ -18,7 +18,9 @@ def on_key_command(message: str):
     parts = message.split(maxsplit=2)
     if len(parts) >= 3:
         save_api_key(parts[2].strip())
-        minescript.echo("DSD: API key saved.")
+        minescript.echo_json(constants.dsd_prefix() + [
+            {"text": "API key saved.", "color": "white"}
+        ])
         return
 
     env = constants.ENV_PATH
@@ -33,11 +35,17 @@ def on_key_command(message: str):
                 break
         if key:
             masked = key[:4] + "..." + key[-4:] if len(key) > 8 else "****"
-            minescript.echo(f"DSD: Key {masked} (set at {ts})")
+            minescript.echo_json(constants.dsd_prefix() + [
+                {"text": f"Key {masked} (set at {ts})", "color": "white"}
+            ])
         else:
-            minescript.echo("DSD: No API key stored. Set it with `!dsd key <key>`.")
+            minescript.echo_json(constants.dsd_prefix() + [
+                {"text": "No API key stored. Set it with `!dsd key <key>`.", "color": "white"}
+            ])
     else:
-        minescript.echo("DSD: No API key stored. Set it with `!dsd key <key>`.")
+        minescript.echo_json(constants.dsd_prefix() + [
+            {"text": "No API key stored. Set it with `!dsd key <key>`.", "color": "white"}
+        ])
 
 
 def on_chat(clean_text: str, match) -> bool:
@@ -59,12 +67,17 @@ def process_and_display(username: str, user_class: str, user_level: str):
         _process_and_display(username, user_class, user_level)
     except Exception as e:
         _log().exception("Error processing %s: %s", username, e)
-        minescript.echo(f"DSD: Error processing {username}: {e}")
+        minescript.echo_json(constants.dsd_prefix() + [
+            {"text": f"Error processing {username}: {e}", "color": "white"}
+        ])
 
 
 def _process_and_display(username: str, user_class: str, user_level: str):
     uuid = get_uuid(username)
     if uuid is None:
+        minescript.echo_json(constants.dsd_prefix() + [
+            {"text": f"Cannot find user {username}", "color": "white"}
+        ])
         return
 
     profiles_data = get_profiles_data(uuid)
@@ -73,12 +86,16 @@ def _process_and_display(username: str, user_class: str, user_level: str):
 
     user_profile = get_selected_profile(profiles_data, uuid)
     if user_profile is None:
-        minescript.echo(f"DSD: No profile data for {username}")
+        minescript.echo_json(constants.dsd_prefix() + [
+            {"text": f"No profile data for {username}", "color": "white"}
+        ])
         return
 
     dungeon_data = user_profile.get("dungeons", {})
     if not dungeon_data:
-        minescript.echo(f"DSD: No dungeon data for {username}")
+        minescript.echo_json(constants.dsd_prefix() + [
+            {"text": f"No dungeon data for {username}", "color": "white"}
+        ])
         return
 
     classes = dungeon_data.get("player_classes", {})

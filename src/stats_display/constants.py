@@ -3,6 +3,15 @@ from src.core.constants import (
     logger, cache,
 )
 
+
+def dsd_prefix():
+    return [
+        {"text": "DSD", "color": "aqua"},
+        {"text": " (StatsDisplay)", "color": "gray"},
+        {"text": "> ", "color": "aqua"},
+    ]
+
+
 BASE_URL = "https://api.hypixel.net/v2/skyblock"
 
 MISSING_ITEMS_CHECK = {

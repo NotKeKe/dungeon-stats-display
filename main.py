@@ -13,6 +13,7 @@ MC_LOG_PATH = BASE_DIR.parent / "logs" / "latest.log"
 init_core(BASE_DIR)
 
 from src.core import constants as core_const
+from src.stats_display.constants import dsd_prefix
 from src.stats_display.handler import on_chat as stats_on_chat, on_key_command
 from src.user_block.handler import on_chat as block_on_chat, on_command as block_on_command
 
@@ -59,7 +60,9 @@ def main():
                     _log = core_const.logger
                     assert _log is not None
                     _log.exception("Event loop error")
-                    minescript.echo(f"DSD: Error: {e}")
+                    minescript.echo_json(dsd_prefix() + [
+                        {"text": f"Error: {e}", "color": "white"}
+                    ])
 
     log_thread = threading.Thread(target=log_loop, daemon=True)
     log_thread.start()
