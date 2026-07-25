@@ -12,3 +12,6 @@ dependencies = [
     "nbt",
     "stickytape",
 ]
+
+[tool.setuptools.package-dir]
+"" = "system/lib"
