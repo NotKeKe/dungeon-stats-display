@@ -26,3 +26,4 @@ def setup(base_dir: Path):
     constants.logger.propagate = False
 
     constants.cache = Cache(constants.DB_PATH)
+    constants.cache.clear()

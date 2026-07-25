@@ -29,6 +29,13 @@ class Cache:
             return row[0]
         return None
 
+    def clear(self):
+        con = sqlite3.connect(self._db_path)
+        cur = con.cursor()
+        cur.execute("DELETE FROM cache")
+        con.commit()
+        con.close()
+
     def set(self, key: str, data: str):
         con = sqlite3.connect(self._db_path)
         cur = con.cursor()
