@@ -26,7 +26,7 @@ from src.user_block.handler import on_command as block_on_command
 
 
 def _on_help(message: str):
-    minescript.echo_json(dsd_prefix(DSDCategory.StatsDisplay) + [
+    minescript.echo_json(dsd_prefix() + [
         {"text": "Commands:", "color": "white"}
     ])
     minescript.echo_json([
@@ -48,8 +48,10 @@ def _on_help(message: str):
 
 
 def _on_bare(message: str):
-    minescript.echo_json(dsd_prefix(DSDCategory.StatsDisplay) + [
-        {"text": "Use !dsd help to see available commands.", "color": "white"}
+    minescript.echo_json(dsd_prefix() + [
+        {"text": "Use ", "color": "white"},
+        {"text": "!dsd help", "color": "white", "bold": True},
+        {"text": " to see available commands.", "color": "white"},
     ])
 
 

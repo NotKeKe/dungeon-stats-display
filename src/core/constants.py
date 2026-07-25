@@ -13,12 +13,14 @@ class DSDCategory(Enum):
     Block = "Block"
 
 
-def dsd_prefix(category: DSDCategory):
-    return [
+def dsd_prefix(category: DSDCategory | None = None):
+    prefix = [
         {"text": "DSD", "color": "aqua"},
-        {"text": f" ({category.value})", "color": "gray"},
-        {"text": "> ", "color": "aqua"},
     ]
+    if category is not None:
+        prefix.append({"text": f" ({category.value})", "color": "gray"})
+    prefix.append({"text": "> ", "color": "aqua"})
+    return prefix
 
 
 CHAT_PATTERN = re.compile(
