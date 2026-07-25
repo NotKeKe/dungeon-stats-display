@@ -4,14 +4,22 @@ from pathlib import Path
 
 import minescript
 
-from src.dungeon_stats_display.app import setup
-from src.dungeon_stats_display.handler import handle_chat_message, handle_dsd_command
-from src.dungeon_stats_display.constants import logger
+from src.core.setup import init_core
+from src.core.dispatcher import add_chat_hook, register_command, dispatch_chat, dispatch_command
 
 BASE_DIR = Path(__file__).parent
 MC_LOG_PATH = BASE_DIR.parent / "logs" / "latest.log"
 
-setup(BASE_DIR)
+init_core(BASE_DIR)
+
+from src.core import constants as core_const
+from src.stats_display.handler import on_chat as stats_on_chat, on_key_command
+from src.user_block.handler import on_chat as block_on_chat, on_command as block_on_command
+
+add_chat_hook(block_on_chat)
+add_chat_hook(stats_on_chat)
+register_command("!dsd key", on_key_command)
+register_command("!dsd block", block_on_command)
 
 
 def main():
@@ -36,7 +44,7 @@ def main():
                     for line in f:
                         line = line.rstrip("\n\r")
                         if line:
-                            handle_chat_message(line)
+                            dispatch_chat(line)
                     last_size = current_size
 
     def event_loop():
@@ -46,9 +54,9 @@ def main():
                 event = event_queue.get()
                 try:
                     if event.type == minescript.EventType.OUTGOING_CHAT_INTERCEPT:
-                        handle_dsd_command(event.message)
+                        dispatch_command(event.message)
                 except Exception as e:
-                    _log = logger
+                    _log = core_const.logger
                     assert _log is not None
                     _log.exception("Event loop error")
                     minescript.echo(f"DSD: Error: {e}")

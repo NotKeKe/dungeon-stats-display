@@ -4,6 +4,7 @@ import minescript
 import requests
 
 from . import constants
+from src.core.api import get_uuid
 
 
 def get_api_key() -> str:
@@ -23,29 +24,6 @@ def save_api_key(key: str):
     env = constants.ENV_PATH
     assert env is not None
     env.write_text(f"KEY={key}", encoding="utf-8")
-
-
-def get_uuid(username: str) -> str | None:
-    cache = constants.cache
-    assert cache is not None
-
-    cache_key = f"uuid:{username}"
-    cached = cache.get(cache_key)
-    if cached:
-        return cached
-
-    resp = requests.get(
-        f"https://api.mojang.com/users/profiles/minecraft/{username}"
-    )
-    if resp.status_code != 200:
-        minescript.echo(f"DSD: Cannot find user {username}")
-        return None
-
-    data = resp.json()
-    uuid = data.get("id")
-    if uuid:
-        cache.set(cache_key, uuid)
-    return uuid
 
 
 def get_profiles_data(uuid: str) -> dict | None:

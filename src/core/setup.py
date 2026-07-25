@@ -3,10 +3,9 @@ from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
 from . import constants
-from .cache import Cache
 
 
-def setup(base_dir: Path):
+def init_core(base_dir: Path):
     constants.DATA_DIR = base_dir / "dungeon-stats-display"
     constants.DATA_DIR.mkdir(exist_ok=True)
     constants.DB_PATH = constants.DATA_DIR / "dungeons.db"
@@ -25,5 +24,6 @@ def setup(base_dir: Path):
     constants.logger.addHandler(_log_handler)
     constants.logger.propagate = False
 
+    from src.stats_display.cache import Cache
     constants.cache = Cache(constants.DB_PATH)
     constants.cache.clear()

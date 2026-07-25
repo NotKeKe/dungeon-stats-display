@@ -1,4 +1,3 @@
-import re
 from datetime import datetime
 
 import minescript
@@ -15,11 +14,8 @@ def _log():
     return logger
 
 
-def handle_dsd_command(message: str):
+def on_key_command(message: str):
     parts = message.split(maxsplit=2)
-    if len(parts) < 2 or parts[1] != "key":
-        return
-
     if len(parts) >= 3:
         save_api_key(parts[2].strip())
         minescript.echo("DSD: API key saved.")
@@ -44,22 +40,18 @@ def handle_dsd_command(message: str):
         minescript.echo("DSD: No API key stored. Set it with `!dsd key <key>`.")
 
 
-def handle_chat_message(message: str):
-    clean = re.sub(r"\u00a7.", "", message)
-    match = constants.CHAT_PATTERN.search(clean)
-    if not match:
-        return
-
+def on_chat(clean_text: str, match) -> bool:
     username = match.group(1)
     user_class = match.group(2)
     user_level = match.group(3)
 
     if username == minescript.player().name:
-        return
+        return False
 
-    _log().info(f"Processing {username}-{user_class}-{user_level} with message `{message}`")
+    _log().info(f"Processing {username}-{user_class}-{user_level}")
 
     process_and_display(username, user_class, user_level)
+    return False
 
 
 def process_and_display(username: str, user_class: str, user_level: str):
