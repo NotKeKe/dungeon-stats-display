@@ -18,16 +18,47 @@ MC_LOG_PATH = BASE_DIR.parent / "logs" / "latest.log"
 init_core(BASE_DIR)
 
 from src.core import constants as core_const
-from src.stats_display.constants import dsd_prefix
+from src.core.constants import DSDCategory, dsd_prefix
 from src.stats_display.handler import on_chat as stats_on_chat
 from src.stats_display.handler import on_key_command
 from src.user_block.handler import on_chat as block_on_chat
 from src.user_block.handler import on_command as block_on_command
 
+
+def _on_help(message: str):
+    minescript.echo_json(dsd_prefix(DSDCategory.StatsDisplay) + [
+        {"text": "Commands:", "color": "white"}
+    ])
+    minescript.echo_json([
+        {"text": "  !dsd key <api_key>", "color": "white"},
+        {"text": "  - Set Hypixel API key", "color": "gray"},
+    ])
+    minescript.echo_json([
+        {"text": "  !dsd block add <user> [reason]", "color": "white"},
+        {"text": "  - Add user to block list", "color": "gray"},
+    ])
+    minescript.echo_json([
+        {"text": "  !dsd block remove <user>", "color": "white"},
+        {"text": "  - Remove user from block list", "color": "gray"},
+    ])
+    minescript.echo_json([
+        {"text": "  !dsd block list", "color": "white"},
+        {"text": "  - List blocked users", "color": "gray"},
+    ])
+
+
+def _on_bare(message: str):
+    minescript.echo_json(dsd_prefix(DSDCategory.StatsDisplay) + [
+        {"text": "Use !dsd help to see available commands.", "color": "white"}
+    ])
+
+
 add_chat_hook(block_on_chat)
 add_chat_hook(stats_on_chat)
 register_command("!dsd key", on_key_command)
 register_command("!dsd block", block_on_command)
+register_command("!dsd help", _on_help)
+register_command("!dsd", _on_bare)
 
 
 def main():
@@ -67,7 +98,7 @@ def main():
                     _log = core_const.logger
                     assert _log is not None
                     _log.exception("Event loop error")
-                    minescript.echo_json(dsd_prefix() + [
+                    minescript.echo_json(dsd_prefix(DSDCategory.StatsDisplay) + [
                         {"text": f"Error: {e}", "color": "white"}
                     ])
 
