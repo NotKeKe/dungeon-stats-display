@@ -30,20 +30,16 @@ def _on_help(message: str):
         {"text": "Commands:", "color": "white"}
     ])
     minescript.echo_json([
+        {"text": "  !dsd key", "color": "white"},
+        {"text": "  - Preview stored API key", "color": "gray"},
+    ])
+    minescript.echo_json([
         {"text": "  !dsd key <api_key>", "color": "white"},
         {"text": "  - Set Hypixel API key", "color": "gray"},
     ])
     minescript.echo_json([
-        {"text": "  !dsd block add <user> [reason]", "color": "white"},
-        {"text": "  - Add user to block list", "color": "gray"},
-    ])
-    minescript.echo_json([
-        {"text": "  !dsd block remove <user>", "color": "white"},
-        {"text": "  - Remove user from block list", "color": "gray"},
-    ])
-    minescript.echo_json([
-        {"text": "  !dsd block list", "color": "white"},
-        {"text": "  - List blocked users", "color": "gray"},
+        {"text": "  !dsd block", "color": "white"},
+        {"text": "  - Block list management", "color": "gray"},
     ])
 
 
