@@ -10,7 +10,7 @@
 - 有關網路請求，一律使用 requests
 
 ## 專案結構
-開發時，程式碼位於 `src/dungeon_stats_display/` 中，使用正常的 Python package 結構。
+開發時，程式碼位於 `src/core,stats_display,user_block` 中，使用正常的 Python package 結構。
 `main.py` 是進入點。
 
 部署前，執行 `python scripts/bundle.py` 來使用 stickytape 將所有程式碼打包成單一檔案 `dungeon_stats_display.py`。

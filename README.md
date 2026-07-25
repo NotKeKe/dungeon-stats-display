@@ -22,12 +22,13 @@
 
 ## Why this?
 - Recently, the Odin mod has occasionally been displaying error codes related to 429 or 500, which often prevents us from quickly determining whether a user’s gear, secrets, and other items meet our requirements.
-- So, I created this script—which is **about only 600~700** lines to allow users to **send requests by applying for your own API keys**.
+- So, I created this script to allow users to **send requests by applying for your own API keys**.
 - Also, all data returned from Hypixel is processed locally; **your API key will not be uploaded anywhere other than Hypixel!**
 
 ## Demo
 I formatted the output based on Odin's output format. — **shout-out to Odin!**
-![DEMO](docs/image.png)
+![DEMO StatsDisplay](docs/image.png)
+![DEMO Output style](docs/image1.png)
 
 ## How to use?
 - [Download Minescript](https://modrinth.com/mod/minescript) from Modrinth.
