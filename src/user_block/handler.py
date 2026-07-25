@@ -5,6 +5,7 @@ import minescript
 
 from src.core import constants as core_const
 from src.core.api import get_uuid
+from src.core.constants import DSDCategory, dsd_prefix
 
 from .constants import DEFAULT_KICK_REASON
 from .database import BlockDatabase
@@ -46,18 +47,10 @@ def on_chat(clean_text: str, match: Match[str]) -> bool:
     return True
 
 
-def _prefix():
-    return [
-        {"text": "DSD", "color": "aqua"},
-        {"text": " (Block)", "color": "gray"},
-        {"text": "> ", "color": "aqua"},
-    ]
-
-
 def on_command(message: str):
     parts = message.split()
     if len(parts) < 3:
-        minescript.echo_json(_prefix() + [
+        minescript.echo_json(dsd_prefix(DSDCategory.Block) + [
             {"text": "use !dsd block add/remove/list", "color": "white"}
         ])
         return
@@ -68,11 +61,11 @@ def on_command(message: str):
         db = _get_db()
         rows = db.get_all()
         if not rows:
-            minescript.echo_json(_prefix() + [
+            minescript.echo_json(dsd_prefix(DSDCategory.Block) + [
                 {"text": "No blocked users.", "color": "white"}
             ])
             return
-        minescript.echo_json(_prefix() + [
+        minescript.echo_json(dsd_prefix(DSDCategory.Block) + [
             {"text": "Blocked users:", "color": "white"}
         ])
         for uuid, username, reason, added_at in rows:
@@ -89,13 +82,13 @@ def on_command(message: str):
         return
 
     if sub not in ("add", "remove"):
-        minescript.echo_json(_prefix() + [
+        minescript.echo_json(dsd_prefix(DSDCategory.Block) + [
             {"text": f"unknown subcommand '{sub}'", "color": "white"}
         ])
         return
 
     if len(parts) < 4:
-        minescript.echo_json(_prefix() + [
+        minescript.echo_json(dsd_prefix(DSDCategory.Block) + [
             {"text": f"!dsd block {sub} <username> [reason]", "color": "white"}
         ])
         return
@@ -105,7 +98,7 @@ def on_command(message: str):
 
     uuid = get_uuid(username)
     if uuid is None:
-        minescript.echo_json(_prefix() + [
+        minescript.echo_json(dsd_prefix(DSDCategory.Block) + [
             {"text": f"Cannot find user '{username}'", "color": "white"}
         ])
         return
@@ -113,16 +106,16 @@ def on_command(message: str):
     if sub == "add":
         db = _get_db()
         db.add(uuid, username, reason)
-        minescript.echo_json(_prefix() + [
+        minescript.echo_json(dsd_prefix(DSDCategory.Block) + [
             {"text": f"Added '{username}' ({uuid}) to block list.", "color": "white"}
         ])
     elif sub == "remove":
         db = _get_db()
         if db.remove(uuid):
-            minescript.echo_json(_prefix() + [
+            minescript.echo_json(dsd_prefix(DSDCategory.Block) + [
                 {"text": f"Removed '{username}' ({uuid}) from block list.", "color": "white"}
             ])
         else:
-            minescript.echo_json(_prefix() + [
+            minescript.echo_json(dsd_prefix(DSDCategory.Block) + [
                 {"text": f"'{username}' was not in block list.", "color": "white"}
             ])

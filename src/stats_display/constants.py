@@ -2,13 +2,12 @@ from src.core.constants import (
     CHAT_PATTERN, DATA_DIR, DB_PATH, ENV_PATH, LOG_PATH,
     logger, cache,
 )
+from src.core.constants import dsd_prefix as _core_dsd_prefix
+from src.core.constants import DSDCategory
+
 
 def dsd_prefix():
-    return [
-        {"text": "DSD", "color": "aqua"},
-        {"text": " (StatsDisplay)", "color": "gray"},
-        {"text": "> ", "color": "aqua"},
-    ]
+    return _core_dsd_prefix(DSDCategory.StatsDisplay)
 
 
 BASE_URL = "https://api.hypixel.net/v2/skyblock"
