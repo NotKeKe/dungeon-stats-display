@@ -4,8 +4,13 @@ from pathlib import Path
 
 import minescript
 
+from src.core.dispatcher import (
+    add_chat_hook,
+    dispatch_chat,
+    dispatch_command,
+    register_command,
+)
 from src.core.setup import init_core
-from src.core.dispatcher import add_chat_hook, register_command, dispatch_chat, dispatch_command
 
 BASE_DIR = Path(__file__).parent
 MC_LOG_PATH = BASE_DIR.parent / "logs" / "latest.log"
@@ -14,8 +19,10 @@ init_core(BASE_DIR)
 
 from src.core import constants as core_const
 from src.stats_display.constants import dsd_prefix
-from src.stats_display.handler import on_chat as stats_on_chat, on_key_command
-from src.user_block.handler import on_chat as block_on_chat, on_command as block_on_command
+from src.stats_display.handler import on_chat as stats_on_chat
+from src.stats_display.handler import on_key_command
+from src.user_block.handler import on_chat as block_on_chat
+from src.user_block.handler import on_command as block_on_command
 
 add_chat_hook(block_on_chat)
 add_chat_hook(stats_on_chat)

@@ -3,7 +3,6 @@ from src.core.constants import (
     logger, cache,
 )
 
-
 def dsd_prefix():
     return [
         {"text": "DSD", "color": "aqua"},

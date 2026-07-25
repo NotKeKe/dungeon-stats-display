@@ -4,7 +4,7 @@ from re import Match
 import minescript
 
 from . import constants
-from .api import get_uuid, get_profiles_data, get_selected_profile, save_api_key
+from .api import get_profiles_data, get_selected_profile, get_uuid, save_api_key
 from .display import Display
 from .utils import Utils
 

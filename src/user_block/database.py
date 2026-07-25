@@ -1,5 +1,5 @@
 import sqlite3
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 
@@ -24,7 +24,7 @@ class BlockDatabase:
         cur.execute(
             "INSERT OR REPLACE INTO blocked_users (uuid, username, reason, added_at) "
             "VALUES (?, ?, ?, ?)",
-            (uuid, username.lower(), reason, datetime.now(timezone.utc).isoformat()),
+            (uuid, username.lower(), reason, datetime.now(UTC).isoformat()),
         )
         con.commit()
         con.close()

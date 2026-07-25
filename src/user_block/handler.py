@@ -1,9 +1,11 @@
-import minescript
 from datetime import datetime
 from re import Match
 
+import minescript
+
 from src.core import constants as core_const
 from src.core.api import get_uuid
+
 from .constants import DEFAULT_KICK_REASON
 from .database import BlockDatabase
 

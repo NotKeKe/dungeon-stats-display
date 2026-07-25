@@ -1,5 +1,6 @@
 import base64
 import io
+
 from nbt import nbt
 
 from . import constants
@@ -34,8 +35,7 @@ class Utils:
     @staticmethod
     def xp_to_level(total_xp: float) -> tuple[int, float]:
         xp = int(total_xp)
-        if xp < 0:
-            xp = 0
+        xp = max(xp, 0)
 
         level = 0
         for n in range(1, 51):
