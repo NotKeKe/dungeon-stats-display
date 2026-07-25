@@ -1,5 +1,11 @@
-config.py
 __pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+config.py
 test*
 *.json
 *.db
