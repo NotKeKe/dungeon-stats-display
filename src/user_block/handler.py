@@ -1,5 +1,6 @@
 import minescript
 from datetime import datetime
+from re import Match
 
 from src.core import constants as core_const
 from src.core.api import get_uuid
@@ -7,13 +8,13 @@ from .constants import DEFAULT_KICK_REASON
 from .database import BlockDatabase
 
 
-def _get_db():
+def _get_db() -> BlockDatabase:
     db_path = core_const.DB_PATH
     assert db_path is not None
     return BlockDatabase(db_path)
 
 
-def on_chat(clean_text: str, match) -> bool:
+def on_chat(clean_text: str, match: Match[str]) -> bool:
     username = match.group(1)
 
     player = minescript.player()
@@ -38,7 +39,7 @@ def on_chat(clean_text: str, match) -> bool:
     base_reason = db_reason or DEFAULT_KICK_REASON
     kick_reason = f"{base_reason} (added at {time_str})"
 
-    minescript.execute(f"/pc {kick_reason}")
+    minescript.execute(f"/pc Kicking {username}, reason: \"{kick_reason}\"")
     minescript.execute(f"/party kick {username}")
     return True
 

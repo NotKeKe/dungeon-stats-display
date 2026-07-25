@@ -4,7 +4,7 @@ from re import Match
 
 from .constants import CHAT_PATTERN
 
-_ChatHook = Callable[[str, Match[str] | None], bool]
+_ChatHook = Callable[[str, Match[str]], bool]
 
 _chat_hooks: list[_ChatHook] = []
 _command_routes: dict[str, Callable[[str], None]] = {}

@@ -1,4 +1,5 @@
 from datetime import datetime
+from re import Match
 
 import minescript
 
@@ -48,7 +49,7 @@ def on_key_command(message: str):
         ])
 
 
-def on_chat(clean_text: str, match) -> bool:
+def on_chat(clean_text: str, match: Match[str]) -> bool:
     username = match.group(1)
     user_class = match.group(2)
     user_level = match.group(3)
