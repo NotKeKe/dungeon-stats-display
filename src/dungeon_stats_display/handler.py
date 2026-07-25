@@ -54,6 +54,9 @@ def handle_chat_message(message: str):
     user_class = match.group(2)
     user_level = match.group(3)
 
+    if username == minescript.player().name:
+        return
+
     _log().info(f"Processing {username}-{user_class}-{user_level} with message `{message}`")
 
     process_and_display(username, user_class, user_level)
