@@ -63,6 +63,28 @@ def on_chat(clean_text: str, match: Match[str]) -> bool:
     return False
 
 
+def on_search_command(message: str):
+    parts = message.split(maxsplit=2)
+    if len(parts) < 3:
+        minescript.echo_json(constants.dsd_prefix() + [
+            {"text": "Usage: !dsd search <username>", "color": "white"}
+        ])
+        return
+    username = parts[2].strip()
+    if not username:
+        minescript.echo_json(constants.dsd_prefix() + [
+            {"text": "Usage: !dsd search <username>", "color": "white"}
+        ])
+        return
+    minescript.echo_json(constants.dsd_prefix() + [
+        {"text": f"Searching for {username}...", "color": "white"}
+    ])
+    # NOTE: process_and_display 的 user_class / user_level 目前未被使用，
+    #       此處傳入空字串。若未來重寫 process_and_display 使用了這些參數，
+    #       需要確認 search 情境下是否要傳入不同值。
+    process_and_display(username, "", "")
+
+
 def process_and_display(username: str, user_class: str, user_level: str):
     try:
         _process_and_display(username, user_class, user_level)

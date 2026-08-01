@@ -21,6 +21,7 @@ from src.core import constants as core_const
 from src.core.constants import DSDCategory, dsd_prefix
 from src.stats_display.handler import on_chat as stats_on_chat
 from src.stats_display.handler import on_key_command
+from src.stats_display.handler import on_search_command
 from src.user_block.handler import on_chat as block_on_chat
 from src.user_block.handler import on_command as block_on_command
 
@@ -36,6 +37,10 @@ def _on_help(message: str):
     minescript.echo_json([
         {"text": "  !dsd key <api_key>", "color": "white"},
         {"text": "  - Set Hypixel API key", "color": "gray"},
+    ])
+    minescript.echo_json([
+        {"text": "  !dsd search <username>", "color": "white"},
+        {"text": "  - Search and display player stats", "color": "gray"},
     ])
     minescript.echo_json([
         {"text": "  !dsd block", "color": "white"},
@@ -55,6 +60,7 @@ add_chat_hook(block_on_chat)
 add_chat_hook(stats_on_chat)
 register_command("!dsd key", on_key_command)
 register_command("!dsd block", block_on_command)
+register_command("!dsd search", on_search_command)
 register_command("!dsd help", _on_help)
 register_command("!dsd", _on_bare)
 
