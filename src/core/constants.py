@@ -27,6 +27,10 @@ CHAT_PATTERN = re.compile(
     r"\[CHAT\].*?Party Finder > (\w+) joined the dungeon group! \((\w+) Level (\d+)\)"
 )
 
+LEAP_PATTERN = re.compile(
+    r"\[CHAT\]\s*You have teleported to (\w+)!"
+)
+
 DATA_DIR: Path | None = None
 DB_PATH: Path | None = None
 ENV_PATH: Path | None = None

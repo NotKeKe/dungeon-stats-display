@@ -1,17 +1,21 @@
 import re
 from collections.abc import Callable
-from re import Match
+from re import Match, Pattern
 
-from .constants import CHAT_PATTERN
+from .constants import CHAT_PATTERN, LEAP_PATTERN
 
 _ChatHook = Callable[[str, Match[str]], bool]
 
-_chat_hooks: list[_ChatHook] = []
+_chat_hooks: dict[str, list[_ChatHook]] = {}
+_chat_patterns: dict[str, Pattern[str]] = {
+    "party_finder": CHAT_PATTERN,
+    "leap": LEAP_PATTERN,
+}
 _command_routes: dict[str, Callable[[str], None]] = {}
 
 
-def add_chat_hook(fn: _ChatHook):
-    _chat_hooks.append(fn)
+def add_chat_hook(pattern_id: str, fn: _ChatHook):
+    _chat_hooks.setdefault(pattern_id, []).append(fn)
 
 
 def register_command(prefix: str, fn: Callable[[str], None]):
@@ -20,11 +24,12 @@ def register_command(prefix: str, fn: Callable[[str], None]):
 
 def dispatch_chat(message: str):
     clean = re.sub(r"\u00a7.", "", message)
-    match = CHAT_PATTERN.search(clean)
-    if not match:
-        return
-    for fn in _chat_hooks:
-        if fn(clean, match):
+    for pattern_id, pattern in _chat_patterns.items():
+        match = pattern.search(clean)
+        if match:
+            for fn in _chat_hooks.get(pattern_id, []):
+                if fn(clean, match):
+                    break
             break
 
 

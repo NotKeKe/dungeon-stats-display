@@ -22,6 +22,7 @@ from src.core.constants import DSDCategory, dsd_prefix
 from src.stats_display.handler import on_chat as stats_on_chat
 from src.stats_display.handler import on_key_command
 from src.stats_display.handler import on_search_command
+from src.leap_notify.handler import on_chat as leap_on_chat
 from src.user_block.handler import on_chat as block_on_chat
 from src.user_block.handler import on_command as block_on_command
 
@@ -56,8 +57,9 @@ def _on_bare(message: str):
     ])
 
 
-add_chat_hook(block_on_chat)
-add_chat_hook(stats_on_chat)
+add_chat_hook("party_finder", block_on_chat)
+add_chat_hook("party_finder", stats_on_chat)
+add_chat_hook("leap", leap_on_chat)
 register_command("!dsd key", on_key_command)
 register_command("!dsd block", block_on_command)
 register_command("!dsd search", on_search_command)
