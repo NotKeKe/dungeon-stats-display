@@ -48,6 +48,10 @@ def _on_help(message: str):
         {"text": "  !dsd block", "color": "white"},
         {"text": "  - Block list management", "color": "gray"},
     ])
+    minescript.echo_json([
+        {"text": "  !dsd leap", "color": "white"},
+        {"text": "  - Set custom leap message template", "color": "gray"},
+    ])
 
 
 def _on_bare(message: str):

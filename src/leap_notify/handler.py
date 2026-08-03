@@ -28,7 +28,9 @@ def on_command(message: str):
             {"text": template, "color": "yellow"},
         ])
         minescript.echo_json(dsd_prefix() + [
-            {"text": "Usage: !dsd leap <message> (must include {name})", "color": "gray"},
+            {"text": "Usage: !dsd leap <message> (ex. !dsd leap ", "color": "gray"},
+            {"text": "Hello {name}", "color": "yellow"},
+            {"text": ")", "color": "gray"},
         ])
         return
 
