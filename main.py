@@ -1,3 +1,6 @@
+import sys
+sys.stdin.reconfigure(encoding='utf-8') # type: ignore
+
 import threading
 import time
 from pathlib import Path
