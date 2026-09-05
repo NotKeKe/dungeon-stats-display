@@ -4,6 +4,9 @@ sys.stdin.reconfigure(encoding='utf-8') # type: ignore
 import threading
 import time
 from pathlib import Path
+import traceback
+from datetime import datetime
+from typing import Literal
 
 import minescript
 
@@ -76,6 +79,21 @@ register_command("!dsd help", _on_help)
 register_command("!dsd", _on_bare)
 
 
+def _get_crash_log_path(tp: Literal["log_loop", "event_loop"]) -> Path:
+    now = datetime.now()
+    now_str = now.strftime("%Y-%m-%d_%H-%M-%S")
+
+    log_dir = core_const.CRASH_LOG_DIR or BASE_DIR / "dungeon-stats-display" / "crash_logs"
+
+    return log_dir / f"crash_{tp}_{now_str}.log"
+
+def _output_record_error(e: str):
+    _log = core_const.logger
+    assert _log is not None
+    minescript.echo_json(dsd_prefix() + [
+        {"text": f"Error: {e}", "color": "white"}
+    ])
+
 def main():
     def log_loop():
         with open(MC_LOG_PATH, "r", encoding="utf-8", errors="ignore") as f:
@@ -102,11 +120,17 @@ def main():
                                 dispatch_chat(line)
                         last_size = current_size
                 except Exception as e:
-                    _log = core_const.logger
-                    assert _log is not None
-                    minescript.echo_json(dsd_prefix() + [
-                        {"text": f"Error: {e}", "color": "white"}
-                    ])
+                    err_str = traceback.format_exc()
+
+                    try:
+                        with open( _get_crash_log_path("log_loop"), "w", encoding="utf-8") as f:
+                            f.write(err_str)
+                    except Exception as e:
+                        _output_record_error(str(e))
+
+                    _output_record_error(str(e))
+
+                    
 
     def event_loop():
         with minescript.EventQueue() as event_queue:
@@ -117,12 +141,15 @@ def main():
                     if event.type == minescript.EventType.OUTGOING_CHAT_INTERCEPT:
                         dispatch_command(event.message)
                 except Exception as e:
-                    _log = core_const.logger
-                    assert _log is not None
-                    _log.exception("Event loop error")
-                    minescript.echo_json(dsd_prefix() + [
-                        {"text": f"Error: {e}", "color": "white"}
-                    ])
+                    err_str = traceback.format_exc()
+
+                    try:
+                        with open( _get_crash_log_path("event_loop"), "w", encoding="utf-8") as f:
+                            f.write(err_str)
+                    except Exception as e:
+                        _output_record_error(str(e))
+
+                    _output_record_error(str(e))
 
     log_thread = threading.Thread(target=log_loop, daemon=True)
     log_thread.start()

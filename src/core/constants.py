@@ -34,6 +34,7 @@ LEAP_PATTERN = re.compile(
 DATA_DIR: Path | None = None
 DB_PATH: Path | None = None
 ENV_PATH: Path | None = None
+CRASH_LOG_DIR: Path | None = None
 LOG_PATH: Path | None = None
 logger: logging.Logger | None = None
 cache: "Cache | None" = None
