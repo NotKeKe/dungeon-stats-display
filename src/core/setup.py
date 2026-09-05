@@ -11,6 +11,7 @@ def init_core(base_dir: Path):
     constants.DB_PATH = constants.DATA_DIR / "dungeons.db"
     constants.ENV_PATH = constants.DATA_DIR / ".env"
     constants.CRASH_LOG_DIR = constants.DATA_DIR / "crash_logs"
+    constants.CRASH_LOG_DIR.mkdir(exist_ok=True)
     constants.LOG_PATH = constants.DATA_DIR / "dsd.log"
 
     _log_handler = RotatingFileHandler(
