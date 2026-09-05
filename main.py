@@ -83,37 +83,44 @@ def main():
             last_size = MC_LOG_PATH.stat().st_size
 
             while True:
-                time.sleep(0.2)
                 try:
-                    current_size = MC_LOG_PATH.stat().st_size
-                except OSError:
-                    continue
+                    time.sleep(0.2)
+                    try:
+                        current_size = MC_LOG_PATH.stat().st_size
+                    except OSError:
+                        continue
 
-                if current_size < last_size:
-                    f.seek(0)
-                    last_size = current_size
-                    continue
+                    if current_size < last_size:
+                        f.seek(0)
+                        last_size = current_size
+                        continue
 
-                if current_size > last_size:
-                    for line in f:
-                        line = line.rstrip("\n\r")
-                        if line:
-                            dispatch_chat(line)
-                    last_size = current_size
+                    if current_size > last_size:
+                        for line in f:
+                            line = line.rstrip("\n\r")
+                            if line:
+                                dispatch_chat(line)
+                        last_size = current_size
+                except Exception as e:
+                    _log = core_const.logger
+                    assert _log is not None
+                    minescript.echo_json(dsd_prefix() + [
+                        {"text": f"Error: {e}", "color": "white"}
+                    ])
 
     def event_loop():
         with minescript.EventQueue() as event_queue:
             event_queue.register_outgoing_chat_interceptor(prefix="!dsd")
             while True:
-                event = event_queue.get()
                 try:
+                    event = event_queue.get()
                     if event.type == minescript.EventType.OUTGOING_CHAT_INTERCEPT:
                         dispatch_command(event.message)
                 except Exception as e:
                     _log = core_const.logger
                     assert _log is not None
                     _log.exception("Event loop error")
-                    minescript.echo_json(dsd_prefix(DSDCategory.StatsDisplay) + [
+                    minescript.echo_json(dsd_prefix() + [
                         {"text": f"Error: {e}", "color": "white"}
                     ])
 
