@@ -69,29 +69,52 @@ class Display:
         return pieces
 
     @staticmethod
-    def _make_missing_pieces(inventory_list: list[str], pets: list[dict]) -> list[dict]:
+    def _get_item_status(
+        inventory_list: list[str], pets: list[dict]
+    ) -> tuple[list[str], list[str]]:
+        """回傳 (owned, missing) 兩份名稱清單，順序為字典順序、寵物最後。"""
         missing_status = Utils.check_missing_items(inventory_list)
 
-        names: list[str] = []
+        owned: list[str] = []
+        missing: list[str] = []
         for item_id, display_name in constants.MISSING_ITEMS_CHECK.items():
-            if not missing_status[item_id]:
-                names.append(display_name)
+            (owned if missing_status[item_id] else missing).append(display_name)
 
-        has_spirit = any(p.get("type", "").lower() == "spirit" for p in pets)
-        has_edrag = any(p.get("type", "").lower() == "ender_dragon" for p in pets)
-        has_gdrag = any(p.get("type", "").lower() == "golden_dragon" for p in pets)
-        if not has_spirit:
-            names.append("Spirit")
-        if not has_edrag:
-            names.append("EDrag")
-        if not has_gdrag:
-            names.append("GDrag")
+        pet_status = {
+            "Spirit": any(p.get("type", "").lower() == "spirit" for p in pets),
+            "EDrag": any(p.get("type", "").lower() == "ender_dragon" for p in pets),
+            "GDrag": any(p.get("type", "").lower() == "golden_dragon" for p in pets),
+        }
+        for name, has in pet_status.items():
+            (owned if has else missing).append(name)
 
-        if not names:
+        return owned, missing
+
+    @staticmethod
+    def _make_owned_pieces(owned: list[str]) -> list[dict]:
+        if owned:
+            hover_lines: list[dict] = []
+            for name in owned:
+                if hover_lines:
+                    hover_lines.append({"text": "\n"})
+                hover_lines.append({"text": "\u2714", "color": "green"})
+                hover_lines.append({"text": " " + name, "color": "white"})
+        else:
+            hover_lines = [{"text": "None", "color": "dark_gray"}]
+
+        hover_event = {"action": "show_text", "value": hover_lines}
+        return [
+            {"text": "\u2714", "color": "green", "hover_event": hover_event},
+            {"text": f" {len(owned)}", "color": "white", "hover_event": hover_event},
+        ]
+
+    @staticmethod
+    def _make_missing_pieces(missing_names: list[str]) -> list[dict]:
+        if not missing_names:
             return [{"text": "None", "color": "dark_gray"}]
 
         pieces: list[dict] = []
-        for i, name in enumerate(names):
+        for i, name in enumerate(missing_names):
             if i > 0:
                 pieces.append({"text": " | ", "color": "gray"})
             pieces.append({"text": "\u2716", "color": "red"})
@@ -145,7 +168,9 @@ class Display:
     ):
         normal_hover = cls._make_floor_hover(normal_pb, constants.FLOOR_NAMES)
         master_hover = cls._make_floor_hover(master_pb, constants.MASTER_FLOOR_NAMES)
-        missing_pieces = cls._make_missing_pieces(inventory_list, pets)
+        owned_names, missing_names = cls._get_item_status(inventory_list, pets)
+        owned_pieces = cls._make_owned_pieces(owned_names)
+        missing_pieces = cls._make_missing_pieces(missing_names)
         armor_json = cls._make_armor_json(armor_details)
 
         lines: list[list[dict]] = [
@@ -180,6 +205,7 @@ class Display:
                 {"text": f"{magical_power:,}", "color": "light_purple"},
             ],
             [{"text": "Armor: ", "color": "gray"}, *armor_json],
+            [{"text": "Owned: ", "color": "gray"}, *owned_pieces],
             [{"text": "Missing: ", "color": "gray"}, *missing_pieces],
             [
                 {"text": "--------------------", "color": "gray"},
