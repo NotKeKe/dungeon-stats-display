@@ -18,6 +18,7 @@ MISSING_ITEMS_CHECK = {
     "DARK_CLAYMORE": "Claymore",
     "CUSTOM_WITHER_BLADE": "Wither Blade",
     "TERMINATOR": "Terminator",
+    "SPRING_BOOTS": "Spring Boots",
 }
 
 XP_TABLE = {

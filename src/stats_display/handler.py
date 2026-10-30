@@ -123,6 +123,7 @@ def _process_and_display(username: str, user_class: str, user_level: str):
 
     classes = dungeon_data.get("player_classes", {})
     inventory = user_profile.get("inventory", {})
+    loadout = user_profile.get("loadout") or {}
     pets = user_profile.get("pets_data", {}).get("pets", [])
 
     cata_level, cata_level_with_progress = Utils.xp_to_level(
@@ -184,7 +185,7 @@ def _process_and_display(username: str, user_class: str, user_level: str):
     else:
         armor_names = ["None", "None", "None", "None"]
 
-    all_inv = Utils.get_all_inventory_data(inventory)
+    all_inv = Utils.get_all_inventory_data(inventory) + Utils.get_loadout_armor_data(loadout)
 
     Display.echo_stats(
         username=username,

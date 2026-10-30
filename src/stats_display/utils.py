@@ -116,10 +116,34 @@ class Utils:
         result = []
         if "inv_contents" in inventory:
             result.append(inventory["inv_contents"].get("data", ""))
+        if "inv_armor" in inventory:
+            result.append(inventory["inv_armor"].get("data", ""))
         if "ender_chest_contents" in inventory:
             result.append(inventory["ender_chest_contents"].get("data", ""))
         for bp in inventory.get("backpack_contents", {}).values():
             result.append(bp.get("data", ""))
+        return result
+
+    @staticmethod
+    def get_loadout_armor_data(loadout: dict) -> list[str]:
+        """衣櫃（Loadout armor sets）每個部位的 base64 NBT 資料。
+
+        格式與背包 slot 相同，都是 {"i": [item]}，可直接用 decode_nbt_base64 解。
+        """
+        result: list[str] = []
+        armor_sets = loadout.get("armor", {})
+        if not isinstance(armor_sets, dict):
+            return result
+
+        for armor_set in armor_sets.values():
+            if not isinstance(armor_set, dict):
+                continue
+            for slot in armor_set.values():
+                if not isinstance(slot, dict):
+                    continue
+                data = slot.get("data")
+                if data:
+                    result.append(data)
         return result
 
     @staticmethod
