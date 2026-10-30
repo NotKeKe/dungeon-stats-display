@@ -1,4 +1,5 @@
 import re
+import threading
 import time
 
 import minescript
@@ -15,6 +16,8 @@ from .database import (
 )
 
 _rules: list[AutoFillRule] | None = None
+# listener 現在跑在背景 thread；序列化避免兩次觸發同時讀背包後重複 /gfs。
+_on_chat_lock = threading.Lock()
 
 
 def _log():
@@ -216,6 +219,11 @@ def _chat_content(clean_text: str) -> str | None:
 
 
 def on_chat(clean_text: str):
+    with _on_chat_lock:
+        _process(clean_text)
+
+
+def _process(clean_text: str):
     content = _chat_content(clean_text)
     if content is None:
         return

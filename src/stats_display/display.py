@@ -1,7 +1,12 @@
+import threading
+
 import minescript
 
 from . import constants
 from .utils import Utils
+
+# stats 是多行輸出，整塊印完才不會被另一個玩家的輸出穿插。
+_ECHO_LOCK = threading.Lock()
 
 
 class Display:
@@ -221,8 +226,9 @@ class Display:
             ],
         ]
 
-        for line in lines:
-            minescript.echo_json(line)
+        with _ECHO_LOCK:
+            for line in lines:
+                minescript.echo_json(line)
 
     @classmethod
     def _build_classes_line(

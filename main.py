@@ -16,6 +16,7 @@ from src.core.dispatcher import (
     dispatch_chat,
     dispatch_command,
     register_command,
+    set_hook_error_handler,
 )
 from src.core.setup import init_core
 
@@ -88,7 +89,7 @@ register_command("!dsd help", _on_help)
 register_command("!dsd", _on_bare)
 
 
-def _get_crash_log_path(tp: Literal["log_loop", "event_loop"]) -> Path:
+def _get_crash_log_path(tp: Literal["log_loop", "event_loop", "hook"]) -> Path:
     now = datetime.now()
     now_str = now.strftime("%Y-%m-%d_%H-%M-%S")
 
@@ -102,6 +103,17 @@ def _output_record_error(e: str):
     minescript.echo_json(dsd_prefix() + [
         {"text": f"Error: {e}", "color": "white"}
     ])
+
+def _report_hook_error(hook_name: str, exc: BaseException):
+    err_str = "".join(traceback.format_exception(exc))
+    try:
+        with open(_get_crash_log_path("hook"), "w", encoding="utf-8") as f:
+            f.write(f"[hook] {hook_name}\n{err_str}")
+    except Exception as e:
+        _output_record_error(str(e))
+    _output_record_error(str(exc))
+
+set_hook_error_handler(_report_hook_error)
 
 def main():
     def log_loop():

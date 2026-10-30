@@ -51,8 +51,9 @@ dungeon_stats_display.py   打包產物（build output，不進版控）
 
 **模組關係**
 - `src/core/dispatcher.py` 是所有訊息的入口：聊天室訊息依 `pattern_id` 分派給註冊的 hook（目前 `party_finder` → `user_block`、`stats_display`；`leap` → `leap_notify`），`!dsd` 開頭的訊息依前綴分派給各模組的指令函式。
-- 同一個 pattern 的 hook 依註冊順序全部執行；hook 沒有回傳值、不會互相打斷（`user_block` 踢人後仍會顯示 stats）。
-- `add_chat_listener()` 註冊的 listener 不受 pattern 限制，會收到每一則訊息；`auto_fill` 用它比對使用者自訂的觸發句。
+- 同一個 pattern 的 hook 依註冊順序全部執行；hook 沒有回傳值、不會互相打斷（`user_block` 踢人後仍會顯示 stats）。每個 hook 會在各自的背景 thread 執行，`dispatch_chat()` 不會等待它們完成；hook／listener 的例外會寫入 `crash_logs/crash_hook_*.log` 並在遊戲內輸出。
+- `add_chat_listener()` 註冊的 listener 不受 pattern 限制，會收到每一則訊息，每個 listener 同樣在背景 thread 執行；`auto_fill` 用它比對使用者自訂的觸發句，並在 `on_chat()` 內用 lock 序列化，避免同一個觸發句重複補物品。
+- 因為 hook 是並行執行的，`stats_display` 的多行輸出會用 `Display` 內的 lock 包住整塊，避免兩個玩家的輸出互相穿插。
 - `src/stats_display/constants.py` 會從 `src/core/constants.py` re-export 路徑、logger、cache，因此 **`init_core()` 必須在 import 任何 handler 之前呼叫**，否則會拿到 `None`。
 
 **啟動流程**
