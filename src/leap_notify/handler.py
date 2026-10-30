@@ -7,16 +7,15 @@ from src.core.constants import dsd_prefix
 from .database import load_template, save_template
 
 
-def on_chat(clean_text: str, match: Match[str]) -> bool:
+def on_chat(clean_text: str, match: Match[str]) -> None:
     username = match.group(1)
 
     player = minescript.player()
     if player and username.lower() == player.name.lower():
-        return False
+        return
 
     template = load_template()
     minescript.execute(f"/pc {template.format(name=username)}")
-    return False
 
 
 def on_command(message: str):

@@ -18,24 +18,24 @@ def _get_db() -> BlockDatabase:
     return BlockDatabase(db_path)
 
 
-def on_chat(clean_text: str, match: Match[str]) -> bool:
+def on_chat(clean_text: str, match: Match[str]) -> None:
     username = match.group(1)
 
     player = minescript.player()
     if player and username.lower() == player.name.lower():
-        return False
+        return
 
     uuid = get_uuid(username)
     if uuid is None:
-        return False
+        return
 
     db = _get_db()
     if not db.is_blocked(uuid):
-        return False
+        return
 
     info = db.get_info(uuid)
     if info is None:
-        return False
+        return
 
     db_reason, added_at = info
     dt = datetime.fromisoformat(added_at)
@@ -46,7 +46,6 @@ def on_chat(clean_text: str, match: Match[str]) -> bool:
     minescript.execute(f"/pc Kicking {username}, reason: \"{kick_reason}\"")
     time.sleep(0.25)
     minescript.execute(f"/party kick {username}")
-    return True
 
 
 def on_command(message: str):

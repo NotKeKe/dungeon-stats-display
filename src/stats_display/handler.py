@@ -49,18 +49,17 @@ def on_key_command(message: str):
         ])
 
 
-def on_chat(clean_text: str, match: Match[str]) -> bool:
+def on_chat(clean_text: str, match: Match[str]) -> None:
     username = match.group(1)
     user_class = match.group(2)
     user_level = match.group(3)
 
     if username == minescript.player().name:
-        return False
+        return
 
     _log().info(f"Processing {username}-{user_class}-{user_level}")
 
     process_and_display(username, user_class, user_level)
-    return False
 
 
 def on_search_command(message: str):

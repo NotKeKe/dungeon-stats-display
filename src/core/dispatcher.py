@@ -4,7 +4,7 @@ from re import Match, Pattern
 
 from .constants import CHAT_PATTERN, LEAP_PATTERN
 
-_ChatHook = Callable[[str, Match[str]], bool]
+_ChatHook = Callable[[str, Match[str]], None]
 _ChatListener = Callable[[str], None]
 
 _chat_hooks: dict[str, list[_ChatHook]] = {}
@@ -17,6 +17,7 @@ _chat_listeners: list[_ChatListener] = []
 
 
 def add_chat_hook(pattern_id: str, fn: _ChatHook):
+    """註冊某個 pattern 的 hook；同一個 pattern 的 hook 會依註冊順序全部執行。"""
     _chat_hooks.setdefault(pattern_id, []).append(fn)
 
 
@@ -34,9 +35,9 @@ def dispatch_chat(message: str):
     for pattern_id, pattern in _chat_patterns.items():
         match = pattern.search(clean)
         if match:
+            # 只有第一個命中的 pattern 會執行 hook，後面的 pattern 不再比對
             for fn in _chat_hooks.get(pattern_id, []):
-                if fn(clean, match):
-                    break
+                fn(clean, match)
             break
 
     for fn in _chat_listeners:
