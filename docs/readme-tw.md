@@ -4,6 +4,8 @@
   <strong>
   一個 Minecraft Hypixel Skyblock Dungeon 腳本。
   <br>
+  BYOK! (帶你自己的Key!)
+  <br>
   你可以使用自己的 API Key 來查看玩家數據!
   <br>
   基於 Minescript

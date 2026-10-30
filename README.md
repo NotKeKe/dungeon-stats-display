@@ -4,6 +4,8 @@
   <strong>
   A Minecraft Hypixel Skyblock Dungeon script.
   <br>
+  BYOK! (Bring your own key!)
+  <br>
   You can use your own API key to see user stats.
   <br>
   Base on Minescript
