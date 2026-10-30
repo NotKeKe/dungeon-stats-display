@@ -12,6 +12,7 @@ import minescript
 
 from src.core.dispatcher import (
     add_chat_hook,
+    add_chat_listener,
     dispatch_chat,
     dispatch_command,
     register_command,
@@ -32,6 +33,8 @@ from src.leap_notify.handler import on_chat as leap_on_chat
 from src.leap_notify.handler import on_command as leap_on_command
 from src.user_block.handler import on_chat as block_on_chat
 from src.user_block.handler import on_command as block_on_command
+from src.auto_fill.handler import on_chat as auto_fill_on_chat
+from src.auto_fill.handler import on_command as auto_fill_on_command
 
 
 def _on_help(message: str):
@@ -58,6 +61,10 @@ def _on_help(message: str):
         {"text": "  !dsd leap", "color": "white"},
         {"text": "  - Set custom leap message template", "color": "gray"},
     ])
+    minescript.echo_json([
+        {"text": "  !dsd autofill", "color": "white"},
+        {"text": "  - Auto refill items when a trigger message appears", "color": "gray"},
+    ])
 
 
 def _on_bare(message: str):
@@ -71,10 +78,12 @@ def _on_bare(message: str):
 add_chat_hook("party_finder", block_on_chat)
 add_chat_hook("party_finder", stats_on_chat)
 add_chat_hook("leap", leap_on_chat)
+add_chat_listener(auto_fill_on_chat)
 register_command("!dsd key", on_key_command)
 register_command("!dsd block", block_on_command)
 register_command("!dsd leap", leap_on_command)
 register_command("!dsd search", on_search_command)
+register_command("!dsd autofill", auto_fill_on_command)
 register_command("!dsd help", _on_help)
 register_command("!dsd", _on_bare)
 

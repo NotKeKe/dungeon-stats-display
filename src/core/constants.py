@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 class DSDCategory(Enum):
     StatsDisplay = "StatsDisplay"
     Block = "Block"
+    AutoFill = "AutoFill"
 
 
 def dsd_prefix(category: DSDCategory | None = None):
