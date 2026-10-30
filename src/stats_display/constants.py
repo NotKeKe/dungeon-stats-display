@@ -13,12 +13,12 @@ def dsd_prefix():
 BASE_URL = "https://api.hypixel.net/v2/skyblock"
 
 MISSING_ITEMS_CHECK = {
+    "DARK_CLAYMORE": "Claymore",
     "GYROKINETIC_WAND": "Gyro",
     "ICE_SPRAY_WAND": "Ice Spray",
-    "DARK_CLAYMORE": "Claymore",
-    "CUSTOM_WITHER_BLADE": "Wither Blade",
-    "TERMINATOR": "Terminator",
     "SPRING_BOOTS": "Spring Boots",
+    "TERMINATOR": "Terminator",
+    "CUSTOM_WITHER_BLADE": "Wither Blade",
 }
 
 XP_TABLE = {
