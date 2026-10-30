@@ -1,5 +1,6 @@
 from datetime import datetime
 from re import Match
+import time
 
 import minescript
 
@@ -43,6 +44,7 @@ def on_chat(clean_text: str, match: Match[str]) -> bool:
     kick_reason = f"{base_reason} (added at {time_str})"
 
     minescript.execute(f"/pc Kicking {username}, reason: \"{kick_reason}\"")
+    time.sleep(0.25)
     minescript.execute(f"/party kick {username}")
     return True
 
