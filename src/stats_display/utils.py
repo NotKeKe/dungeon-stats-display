@@ -1,9 +1,15 @@
 import base64
 import io
+import re
 
 from nbt import nbt
 
 from . import constants
+
+# 裝備 lore 中要保留的行（維持 API 原始格式／顏色）
+_ARMOR_STAT_LINE_RE = re.compile(r"^\u00a77[A-Za-z][A-Za-z ']*: \u00a7[0-9a-f](?:\[|[+-]?\d)")
+_ENCHANT_PART_RE = re.compile(r"^[A-Z][A-Za-z'\- ]+ [IVX]{1,4}$")
+_FORMATTING_CODE_RE = re.compile(r"\u00a7.")
 
 
 class Utils:
@@ -55,16 +61,47 @@ class Utils:
         return level, round(level + progress, 2)
 
     @staticmethod
-    def get_armor_names(inv_armor_data: str) -> list[str]:
+    def get_armor_details(inv_armor_data: str) -> list[dict]:
+        """回傳 4 個部位的裝備名稱與 hover 用的 lore 行（stat / gemstones / enchant）。
+
+        順序跟以前一樣是 helmet → chestplate → leggings → boots。
+        回傳的 lore 行完全是 API 原文（含 § 色碼），顯示時再轉成 component。
+        """
         data = Utils.decode_nbt_base64(inv_armor_data)
-        names: list[str] = []
+        details: list[dict] = []
         for item in data:
             if not item or "tag" not in item:
-                names.append("None")
-            else:
-                names.append(item["tag"]["display"]["Name"])
-        names.reverse()
-        return names
+                details.append({"name": "None", "summary": []})
+                continue
+
+            display = item["tag"].get("display") or {}
+            name = display.get("Name", "?")
+            lore = display.get("Lore") or []
+            summary = [
+                line
+                for line in lore
+                if isinstance(line, str)
+                and (_ARMOR_STAT_LINE_RE.match(line) or Utils._is_enchant_line(line))
+            ]
+            details.append({"name": name, "summary": summary})
+
+        details.reverse()
+        return details
+
+    @staticmethod
+    def _is_enchant_line(line: str) -> bool:
+        """判斷是否為附魔行，例如 `§d§lLegion V, §9Growth VI`。
+
+        每個逗號分隔的段落都必須是「名稱 + 羅馬數字」，避免誤判能力敘述
+        （例如 `§cCatacombs Floor VII§7.`）。
+        """
+        if ": " in line:
+            return False
+        parts = line.split(", ")
+        return all(
+            _ENCHANT_PART_RE.match(_FORMATTING_CODE_RE.sub("", part).strip())
+            for part in parts
+        )
 
     @staticmethod
     def get_floor_pb_times(dungeon_data: dict, floor_key_prefix: str) -> dict[str, dict[str, float]]:

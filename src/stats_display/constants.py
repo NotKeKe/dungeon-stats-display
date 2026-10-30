@@ -57,3 +57,30 @@ FLOOR_TIME_COLORS = {
     "COMP": "green",
 }
 FLOOR_NAME_COLOR = "gold"
+
+# 舊版 § 格式碼 → text component 顏色／樣式
+FORMATTING_COLORS = {
+    "0": "black",
+    "1": "dark_blue",
+    "2": "dark_green",
+    "3": "dark_aqua",
+    "4": "dark_red",
+    "5": "dark_purple",
+    "6": "gold",
+    "7": "gray",
+    "8": "dark_gray",
+    "9": "blue",
+    "a": "green",
+    "b": "aqua",
+    "c": "red",
+    "d": "light_purple",
+    "e": "yellow",
+    "f": "white",
+}
+FORMATTING_STYLES = {
+    "k": "obfuscated",
+    "l": "bold",
+    "m": "strikethrough",
+    "n": "underlined",
+    "o": "italic",
+}

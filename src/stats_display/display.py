@@ -1,5 +1,3 @@
-import re
-
 import minescript
 
 from . import constants
@@ -8,17 +6,62 @@ from .utils import Utils
 
 class Display:
     @staticmethod
-    def _make_armor_json(armor_names: list[str]) -> list[dict]:
+    def _make_formatted_text(raw: str, default_color: str = "white") -> list[dict]:
+        """把帶 § 格式碼的字串轉成 text component 陣列（保留顏色／樣式）。"""
+        pieces: list[dict] = []
+        style: dict[str, object] = {"color": default_color}
+        buf = ""
+
+        def flush():
+            nonlocal buf
+            if buf:
+                pieces.append({"text": buf, **style})
+                buf = ""
+
+        i = 0
+        while i < len(raw):
+            ch = raw[i]
+            if ch == "\u00a7" and i + 1 < len(raw):
+                code = raw[i + 1].lower()
+                flush()
+                if code in constants.FORMATTING_COLORS:
+                    # 顏色碼會重置先前的樣式
+                    style = {"color": constants.FORMATTING_COLORS[code]}
+                elif code in constants.FORMATTING_STYLES:
+                    style[constants.FORMATTING_STYLES[code]] = True
+                elif code == "r":
+                    style = {"color": default_color}
+                i += 2
+                continue
+            buf += ch
+            i += 1
+        flush()
+
+        return pieces or [{"text": raw, "color": default_color}]
+
+    @staticmethod
+    def _make_armor_json(armor_details: list[dict]) -> list[dict]:
         sep = {"text": " | "}
         pieces: list[dict] = []
         for i in range(4):
             if i > 0:
                 pieces.append(sep)
-            name = armor_names[i] if i < len(armor_names) else "None"
-            clean_name = re.sub(r"\u00a7.", "", name)
+            detail = (
+                armor_details[i]
+                if i < len(armor_details)
+                else {"name": "None", "summary": []}
+            )
+            name = detail.get("name", "None")
+            if name in ("None", "?"):
+                hover_value: list[dict] = [{"text": name, "color": "dark_gray"}]
+            else:
+                hover_value = Display._make_formatted_text(name)
+                for line in detail.get("summary") or []:
+                    hover_value.append({"text": "\n"})
+                    hover_value.extend(Display._make_formatted_text(line))
             pieces.append({
                 "text": constants.ARMOR_EMOJIS[i],
-                "hover_event": {"action": "show_text", "value": clean_name},
+                "hover_event": {"action": "show_text", "value": hover_value},
             })
         return pieces
 
@@ -93,14 +136,14 @@ class Display:
         normal_pb: dict[str, dict[str, str]],
         master_pb: dict[str, dict[str, str]],
         magical_power: int,
-        armor_names: list[str],
+        armor_details: list[dict],
         inventory_list: list[str],
         pets: list[dict],
     ):
         normal_hover = cls._make_floor_hover(normal_pb, constants.FLOOR_NAMES)
         master_hover = cls._make_floor_hover(master_pb, constants.MASTER_FLOOR_NAMES)
         missing_pieces = cls._make_missing_pieces(inventory_list, pets)
-        armor_json = cls._make_armor_json(armor_names)
+        armor_json = cls._make_armor_json(armor_details)
 
         lines: list[list[dict]] = [
             [

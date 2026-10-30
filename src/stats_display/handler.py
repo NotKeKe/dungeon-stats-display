@@ -174,16 +174,16 @@ def _process_and_display(username: str, user_class: str, user_level: str):
         user_profile.get("accessory_bag_storage", {}).get("highest_magical_power", 0)
     )
 
-    armor_names: list[str] = []
+    armor_details: list[dict] = []
     inv_armor = inventory.get("inv_armor", {})
     if inv_armor and inv_armor.get("data"):
         try:
-            armor_names = Utils.get_armor_names(inv_armor["data"])
+            armor_details = Utils.get_armor_details(inv_armor["data"])
         except Exception:
             _log().exception("Armor NBT decode error for %s", username)
-            armor_names = ["?", "?", "?", "?"]
+            armor_details = [{"name": "?", "summary": []} for _ in range(4)]
     else:
-        armor_names = ["None", "None", "None", "None"]
+        armor_details = [{"name": "None", "summary": []} for _ in range(4)]
 
     all_inv = Utils.get_all_inventory_data(inventory) + Utils.get_loadout_armor_data(loadout)
 
@@ -197,7 +197,7 @@ def _process_and_display(username: str, user_class: str, user_level: str):
         normal_pb=normal_pb,
         master_pb=master_pb,
         magical_power=magical_power,
-        armor_names=armor_names,
+        armor_details=armor_details,
         inventory_list=all_inv,
         pets=pets,
     )
