@@ -25,6 +25,7 @@ src/
 │   ├── setup.py           init_core()：初始化路徑常數、logger、sqlite cache
 │   ├── constants.py       DSDCategory、dsd_prefix()、CHAT_PATTERN／LEAP_PATTERN
 │   ├── dispatcher.py      聊天室 hook 與 !dsd 指令的註冊／分派
+│   ├── http.py            共用的 requests.Session（keep-alive 連線重用＋預設 timeout）
 │   └── api.py             get_uuid()（Mojang API + sqlite 快取）
 ├── stats_display/         主功能：顯示 party finder 加入者的 stats
 │   ├── handler.py         on_chat／!dsd search 入口，整理資料後交給 Display
@@ -54,6 +55,7 @@ dungeon_stats_display.py   打包產物（build output，不進版控）
 - 同一個 pattern 的 hook 依註冊順序全部執行；hook 沒有回傳值、不會互相打斷（`user_block` 踢人後仍會顯示 stats）。每個 hook 會在各自的背景 thread 執行，`dispatch_chat()` 不會等待它們完成；hook／listener 的例外會寫入 `crash_logs/crash_hook_*.log` 並在遊戲內輸出。
 - `add_chat_listener()` 註冊的 listener 不受 pattern 限制，會收到每一則訊息，每個 listener 同樣在背景 thread 執行；`auto_fill` 用它比對使用者自訂的觸發句，並在 `on_chat()` 內用 lock 序列化，避免同一個觸發句重複補物品。
 - 因為 hook 是並行執行的，`stats_display` 的多行輸出會用 `Display` 內的 lock 包住整塊，避免兩個玩家的輸出互相穿插。
+- 所有對外的 HTTP 請求都經過 `src/core/http.py`：共用一個 module-level `requests.Session`（keep-alive 連線會重用）並套用預設 `timeout=(5, 15)`；不要直接呼叫 `requests.get()`。
 - `src/stats_display/constants.py` 會從 `src/core/constants.py` re-export 路徑、logger、cache，因此 **`init_core()` 必須在 import 任何 handler 之前呼叫**，否則會拿到 `None`。
 
 **啟動流程**

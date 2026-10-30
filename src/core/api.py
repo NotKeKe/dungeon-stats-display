@@ -1,6 +1,5 @@
-import requests
-
 from . import constants
+from .http import get as http_get
 
 
 def get_uuid(username: str) -> str | None:
@@ -12,7 +11,7 @@ def get_uuid(username: str) -> str | None:
     if cached:
         return cached
 
-    resp = requests.get(
+    resp = http_get(
         f"https://api.mojang.com/users/profiles/minecraft/{username}"
     )
     if resp.status_code != 200:

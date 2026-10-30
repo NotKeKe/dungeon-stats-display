@@ -1,10 +1,10 @@
 import json
 
 import minescript
-import requests
 
 from . import constants
 from src.core.api import get_uuid
+from src.core.http import get as http_get
 
 
 def get_api_key() -> str:
@@ -42,7 +42,7 @@ def get_profiles_data(uuid: str) -> dict | None:
         ])
         return None
 
-    resp = requests.get(
+    resp = http_get(
         f"{constants.BASE_URL}/profiles",
         params={"key": get_api_key(), "uuid": uuid},
     )
