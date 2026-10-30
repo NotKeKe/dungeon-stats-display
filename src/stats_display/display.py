@@ -18,7 +18,7 @@ class Display:
             clean_name = re.sub(r"\u00a7.", "", name)
             pieces.append({
                 "text": constants.ARMOR_EMOJIS[i],
-                "hoverEvent": {"action": "show_text", "value": clean_name},
+                "hover_event": {"action": "show_text", "value": clean_name},
             })
         return pieces
 
@@ -102,13 +102,13 @@ class Display:
                 {
                     "text": "Normal",
                     "color": "white",
-                    "hoverEvent": {"action": "show_text", "value": normal_hover},
+                    "hover_event": {"action": "show_text", "value": normal_hover},
                 },
                 {"text": " | ", "color": "dark_gray"},
                 {
                     "text": "Master",
                     "color": "dark_gray",
-                    "hoverEvent": {"action": "show_text", "value": master_hover},
+                    "hover_event": {"action": "show_text", "value": master_hover},
                 },
                 {"text": " | ", "color": "dark_gray"},
                 {"text": "MP: ", "color": "gray"},
