@@ -189,8 +189,9 @@ class Utils:
         return result
 
     @staticmethod
-    def check_missing_items(inventory_list: list[str]) -> dict[str, bool]:
-        to_check: dict[str, bool] = {item: False for item in constants.MISSING_ITEMS_CHECK}
+    def count_items(inventory_list: list[str]) -> dict[str, int]:
+        """計算每個檢查項目在背包／身上／衣櫃中出現的次數。"""
+        counts: dict[str, int] = {item: 0 for item in constants.MISSING_ITEMS_CHECK}
 
         for nbt_str in inventory_list:
             try:
@@ -208,10 +209,10 @@ class Utils:
                 extra = item["tag"].get("ExtraAttributes", {})
                 item_id = extra.get("id", "")
 
-                if item_id in to_check:
-                    to_check[item_id] = True
+                if item_id in counts:
+                    counts[item_id] += 1
 
                 if "ability_scroll" in extra:
-                    to_check["CUSTOM_WITHER_BLADE"] = True
+                    counts["CUSTOM_WITHER_BLADE"] += 1
 
-        return to_check
+        return counts

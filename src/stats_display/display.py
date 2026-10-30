@@ -71,34 +71,43 @@ class Display:
     @staticmethod
     def _get_item_status(
         inventory_list: list[str], pets: list[dict]
-    ) -> tuple[list[str], list[str]]:
-        """回傳 (owned, missing) 兩份名稱清單，順序為字典順序、寵物最後。"""
-        missing_status = Utils.check_missing_items(inventory_list)
+    ) -> tuple[list[tuple[str, int]], list[str]]:
+        """回傳 (owned, missing)。owned 是 (名稱, 數量)，順序為字典順序、寵物最後。"""
+        counts = Utils.count_items(inventory_list)
 
-        owned: list[str] = []
+        owned: list[tuple[str, int]] = []
         missing: list[str] = []
         for item_id, display_name in constants.MISSING_ITEMS_CHECK.items():
-            (owned if missing_status[item_id] else missing).append(display_name)
+            count = counts[item_id]
+            if count > 0:
+                owned.append((display_name, count))
+            else:
+                missing.append(display_name)
 
-        pet_status = {
-            "Spirit": any(p.get("type", "").lower() == "spirit" for p in pets),
-            "EDrag": any(p.get("type", "").lower() == "ender_dragon" for p in pets),
-            "GDrag": any(p.get("type", "").lower() == "golden_dragon" for p in pets),
+        pet_counts = {
+            "Spirit": sum(1 for p in pets if p.get("type", "").lower() == "spirit"),
+            "EDrag": sum(1 for p in pets if p.get("type", "").lower() == "ender_dragon"),
+            "GDrag": sum(1 for p in pets if p.get("type", "").lower() == "golden_dragon"),
         }
-        for name, has in pet_status.items():
-            (owned if has else missing).append(name)
+        for name, count in pet_counts.items():
+            if count > 0:
+                owned.append((name, count))
+            else:
+                missing.append(name)
 
         return owned, missing
 
     @staticmethod
-    def _make_owned_pieces(owned: list[str]) -> list[dict]:
+    def _make_owned_pieces(owned: list[tuple[str, int]]) -> list[dict]:
         if owned:
             hover_lines: list[dict] = []
-            for name in owned:
+            for name, count in owned:
                 if hover_lines:
                     hover_lines.append({"text": "\n"})
                 hover_lines.append({"text": "\u2714", "color": "green"})
                 hover_lines.append({"text": " " + name, "color": "white"})
+                if count > 1:
+                    hover_lines.append({"text": f" \u00d7 {count}", "color": "aqua"})
         else:
             hover_lines = [{"text": "None", "color": "dark_gray"}]
 
