@@ -53,14 +53,33 @@ class Display:
         return pieces
 
     @staticmethod
-    def _make_floor_hover(pb_times: dict[str, dict[str, str]], floor_names: list[str]) -> str:
-        lines: list[str] = ["Floor | S | S+"]
-        for name in floor_names:
-            if name in pb_times:
-                s_time = pb_times[name].get("S", "-")
-                sp_time = pb_times[name].get("S+", "-")
-                lines.append(f"{name}: {s_time} | {sp_time}")
-        return "\n".join(lines) if len(lines) > 1 else "No data"
+    def _make_floor_hover(
+        pb_times: dict[str, dict[str, str]], floor_names: list[str]
+    ) -> list[dict]:
+        sep = {"text": " | ", "color": "dark_gray"}
+        pieces: list[dict] = [{"text": "Floor", "color": "gray"}, sep]
+        for i, key in enumerate(constants.FLOOR_TIME_KEYS):
+            if i > 0:
+                pieces.append(sep)
+            pieces.append({"text": key, "color": constants.FLOOR_TIME_COLORS[key]})
+
+        names = [name for name in floor_names if name in pb_times]
+        if not names:
+            return [{"text": "No data", "color": "dark_gray"}]
+
+        for name in names:
+            pieces.append({"text": "\n"})
+            pieces.append({"text": name, "color": constants.FLOOR_NAME_COLOR})
+            pieces.append({"text": ": ", "color": "dark_gray"})
+            for i, key in enumerate(constants.FLOOR_TIME_KEYS):
+                if i > 0:
+                    pieces.append(sep)
+                value = pb_times[name].get(key)
+                if value is None:
+                    pieces.append({"text": "-", "color": "dark_gray"})
+                else:
+                    pieces.append({"text": value, "color": constants.FLOOR_TIME_COLORS[key]})
+        return pieces
 
     @classmethod
     def echo_stats(

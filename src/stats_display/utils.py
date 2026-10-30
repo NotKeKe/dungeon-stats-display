@@ -73,8 +73,9 @@ class Utils:
 
         s_times: dict = stats.get("fastest_time_s", {})
         sp_times: dict = stats.get("fastest_time_s_plus", {})
+        comp_times: dict = stats.get("fastest_time", {})
 
-        all_keys = set(s_times.keys()) | set(sp_times.keys())
+        all_keys = set(s_times.keys()) | set(sp_times.keys()) | set(comp_times.keys())
         for floor_key in all_keys:
             if floor_key == "best":
                 continue
@@ -83,6 +84,8 @@ class Utils:
                 floor_times["s"] = float(s_times[floor_key])
             if floor_key in sp_times:
                 floor_times["s_plus"] = float(sp_times[floor_key])
+            if floor_key in comp_times:
+                floor_times["comp"] = float(comp_times[floor_key])
             if floor_times:
                 result[floor_key] = floor_times
 
@@ -104,6 +107,8 @@ class Utils:
                         formatted[name]["S"] = Utils.format_time(times["s"])
                     if "s_plus" in times:
                         formatted[name]["S+"] = Utils.format_time(times["s_plus"])
+                    if "comp" in times:
+                        formatted[name]["COMP"] = Utils.format_time(times["comp"])
             return formatted
 
         return (

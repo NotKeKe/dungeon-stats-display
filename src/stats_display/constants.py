@@ -48,3 +48,12 @@ CLASS_COLORS = {
     "tank": "green",
 }
 ARMOR_EMOJIS = ["\u26d1", "\U0001f6e1", "\U0001f456", "\U0001f462"]
+
+# Floor PB hover 的欄位順序與配色
+FLOOR_TIME_KEYS = ["S", "S+", "COMP"]
+FLOOR_TIME_COLORS = {
+    "S": "white",
+    "S+": "aqua",
+    "COMP": "green",
+}
+FLOOR_NAME_COLOR = "gold"
