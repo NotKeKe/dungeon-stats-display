@@ -27,8 +27,20 @@
 
 ## Demo
 輸出格式使用了 Odin 的設計——**向 Odin 致敬！**
-![DEMO StatsDisplay](./image.png)
-![DEMO Output style](./image1.png)
+
+![DEMO StatsDisplay](./demo-search.png)
+
+**Hover** — 裝備數值／附魔、樓層 PB（含 `COMP`）、Owned 物品清單
+
+![裝備 hover](./demo-armor-hover.png)
+
+![樓層 PB hover](./demo-pb-hover.png)
+
+![Owned hover](./demo-owned-hover.png)
+
+**Missing** — 玩家缺少的物品
+
+![Missing](./demo-missing.png)
 
 ## 如何使用？
 - 從 Modrinth [下載 Minescript](https://modrinth.com/mod/minescript)
@@ -55,9 +67,6 @@
 一開始我基於 minescript EventQueue，去 register_chat_listener，但可能是我本身有其他模組的問題，他抓不到我的聊天訊息，因為模組太多 我也不想一一嘗試。  
 因此現在這個版本，是使用閱讀 `.minecraft/logs/latest.log` 的方式去偵測聊天訊息。  
 不過關於 `!dsd` 指令的部分，他還是一樣使用minescript的`OUTGOING_CHAT_INTERCEPT`。
-
-## TODO
-- 懸停顯示功能目前還無法使用，所以暫時無法看到玩家實際穿戴的裝備。
 
 ## 授權
 [Apache-2.0](LICENSE)

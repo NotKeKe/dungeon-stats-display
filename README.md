@@ -27,8 +27,20 @@
 
 ## Demo
 I formatted the output based on Odin's output format. — **shout-out to Odin!**
-![DEMO StatsDisplay](docs/image.png)
-![DEMO Output style](docs/image1.png)
+
+![DEMO StatsDisplay](docs/demo-search.png)
+
+**Hover** — armor stats & enchants, floor PBs (with `COMP`), and the owned-item list
+
+![DEMO Armor hover](docs/demo-armor-hover.png)
+
+![DEMO Floor PB hover](docs/demo-pb-hover.png)
+
+![DEMO Owned hover](docs/demo-owned-hover.png)
+
+**Missing** — items the player does not have
+
+![DEMO Missing](docs/demo-missing.png)
 
 ## How to use?
 - [Download Minescript](https://modrinth.com/mod/minescript) from Modrinth.
@@ -55,9 +67,6 @@ I formatted the output based on Odin's output format. — **shout-out to Odin!**
 At first, I used the Minescript EventQueue to call `register_chat_listener`, but perhaps due to issues with my other mods, it couldn't capture my chat messages. Since I have so many mods, I didn't want to try all of them.  
 So, in this version, chat messages are detected by reading `.minecraft/logs/latest.log`.  
 However, regarding the `!dsd` command, it still uses Minescript's `OUTGOING_CHAT_INTERCEPT`.
-
-## TODO
-- The hover function is not working right now, so you can not autually see what armor are user wearing.
 
 ## License
 [Apache-2.0](LICENSE)
