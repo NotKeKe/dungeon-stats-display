@@ -48,6 +48,8 @@ CLASS_COLORS = {
     "tank": "green",
 }
 ARMOR_EMOJIS = ["\u26d1", "\U0001f6e1", "\U0001f456", "\U0001f462"]
+ARMOR_FILLED_COLOR = "aqua"
+ARMOR_EMPTY_COLOR = "gray"
 
 # Floor PB hover 的欄位順序與配色
 FLOOR_TIME_KEYS = ["S", "S+", "COMP"]

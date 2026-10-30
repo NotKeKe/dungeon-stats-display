@@ -54,13 +54,16 @@ class Display:
             name = detail.get("name", "None")
             if name in ("None", "?"):
                 hover_value: list[dict] = [{"text": name, "color": "dark_gray"}]
+                emoji_color = constants.ARMOR_EMPTY_COLOR
             else:
                 hover_value = Display._make_formatted_text(name)
                 for line in detail.get("summary") or []:
                     hover_value.append({"text": "\n"})
                     hover_value.extend(Display._make_formatted_text(line))
+                emoji_color = constants.ARMOR_FILLED_COLOR
             pieces.append({
                 "text": constants.ARMOR_EMOJIS[i],
+                "color": emoji_color,
                 "hover_event": {"action": "show_text", "value": hover_value},
             })
         return pieces
